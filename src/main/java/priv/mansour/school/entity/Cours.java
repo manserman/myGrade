@@ -10,5 +10,8 @@ public class Cours {
 	private String libelle;
 	private List<Competence> competences;
 	
+	private List<Student> students;
+	
+	private Teacher teacher;
 
 }
