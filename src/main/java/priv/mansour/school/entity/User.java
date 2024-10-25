@@ -1,5 +1,8 @@
 package priv.mansour.school.entity;
 
+import jakarta.persistence.Entity;
+
+@Entity
 public abstract class User {
 
 	private String nom;
