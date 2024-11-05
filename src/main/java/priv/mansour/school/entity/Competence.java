@@ -11,6 +11,7 @@ public class Competence {
     @GeneratedValue(strategy = GenerationType.IDENTITY) 
 	private int Id;
 	private String libelle;
+	private String description;
 	public Competence(String libelle) {
 		this.libelle=libelle;
 		
@@ -26,5 +27,13 @@ public class Competence {
 	}
 	public void setLibelle(String lib) {
 		this.libelle=lib;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 }
