@@ -3,8 +3,9 @@ package priv.mansour.school.entity;
 import jakarta.persistence.Entity;
 
 @Entity
-public class ProjectResult {
+public class Resultat {
 	private Student etudiant;
-	private Project project;
+	private Competence competence;
+	private ResultatEnum result;;
 
 }
