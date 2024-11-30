@@ -1,39 +1,51 @@
 package priv.mansour.school.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import java.util.Objects;
 
-@Entity
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
+@Document
+@AllArgsConstructor
+
+@Setter
+@Getter
 public class Competence {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) 
+	@Id
 	private int Id;
 	private String libelle;
 	private String description;
+
 	public Competence(String libelle) {
-		this.libelle=libelle;
-		
-	}
-	
-	@Override
-	public boolean equals(Object obj) {
-		// TODO Auto-generated method stub
-		return ((Project)obj).getLibelle().equals(getLibelle());
-	}
-	public String getLibelle() {
-		return this.libelle;
-	}
-	public void setLibelle(String lib) {
-		this.libelle=lib;
-	}
+		this.libelle = libelle;
 
-	public String getDescription() {
-		return description;
 	}
+	 // Égalité et hashcode pour permettre l'utilisation comme clé dans une HashMap
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Competence that = (Competence) obj;
+        return Id == that.getId() && Objects.equals(libelle, that.libelle) && Objects.equals(description, that.description);
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hash(Id, libelle, description);
+    }
+
+    // toString pour un affichage facile
+    @Override
+    public String toString() {
+        return "Competence{" +
+               "id=" + Id +
+               ", libelle='" + libelle + '\'' +
+               ", description='" + description + '\'' +
+               '}';
+    }
+
 }

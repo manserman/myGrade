@@ -2,13 +2,24 @@ package priv.mansour.school.entity;
 
 import java.util.List;
 
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Document
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Project {
 	
     @Id
@@ -20,42 +31,10 @@ public class Project {
 	private List<Competence> competences;
 	private String description;
 	private String libelle;
-	@ManyToOne
-	@JoinColumn(name= "id")
-	private Teacher teacher;
+	
+	@DBRef
+	Teacher teacher;
 	
 	
 	
-	
-	@Override
-	public boolean equals(Object obj) {
-		// TODO Auto-generated method stub
-		return getLibelle().equals(((Project)obj).getLibelle());
-		
-	}
-	public String getLibelle() {
-		return this.libelle;
-	}
-	public Teacher getTeacher() {
-		return teacher;
-	}
-	public void setTeacher(Teacher teacher) {
-		this.teacher = teacher;
-	}
-	public void setLibelle(String libelle) {
-		this.libelle = libelle;
-	}
-	public String getDescription() {
-		return description;
-	}
-	public void setDescription(String description) {
-		this.description = description;
-	}
-	public List<Competence> getCompetences() {
-		return competences;
-	}
-	public void setCompetences(List<Competence> competences) {
-		this.competences = competences;
-	}
-
 }

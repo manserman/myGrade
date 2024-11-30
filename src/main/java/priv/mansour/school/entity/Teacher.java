@@ -1,9 +1,19 @@
 package priv.mansour.school.entity;
 
-import jakarta.persistence.Entity;
+import java.util.List;
 
-@Entity
-public class Teacher extends User{
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Document
+@Getter
+@Setter
+public class Teacher extends User {
+	@DBRef
+	private List<Project> projets;
 
 	public Teacher(String nom, String prenom) {
 		super(nom, prenom, Role.TEACHER);

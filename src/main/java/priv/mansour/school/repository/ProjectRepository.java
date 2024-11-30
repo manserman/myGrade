@@ -1,10 +1,13 @@
 package priv.mansour.school.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
-import priv.mansour.school.entity.ProjectResult;
+import priv.mansour.school.entity.Project;
+
+
 @Repository
-public interface ProjectRepository extends JpaRepository<ProjectResult, Long> {
+public interface ProjectRepository extends MongoRepository< Project, Long> {
+	Project findByLibelle(String libelle);
 
 }
