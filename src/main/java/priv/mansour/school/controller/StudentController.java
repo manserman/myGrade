@@ -57,7 +57,7 @@ public class StudentController {
 		}
 	}
 
-	@PostMapping("/{id}/projects")
+	@PostMapping("/{id}/add/projects")
 	public ResponseEntity<Student> addStudentProject(@PathVariable int id, @RequestBody Project project) {
 		try {
 			return ResponseEntity.ok(studentService.addStudentProject(id, project));
@@ -66,7 +66,7 @@ public class StudentController {
 		}
 	}
 
-	@PostMapping("/{id}/results")
+	@PostMapping("/{id}/add/results")
 	public ResponseEntity<Student> addStudentResult(@PathVariable int id, @RequestParam String competenceLibelle,
 			@RequestParam ResultatEnum result) {
 		try {
@@ -77,7 +77,7 @@ public class StudentController {
 		}
 	}
 
-	@DeleteMapping("/{id}")
+	@DeleteMapping("/delete/{id}")
 	public ResponseEntity<Void> deleteStudentById(@PathVariable int id) {
 		studentService.deleteStudentById(id);
 		return ResponseEntity.noContent().build();
