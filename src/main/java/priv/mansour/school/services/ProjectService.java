@@ -19,28 +19,23 @@ public class ProjectService {
 		this.projectRepository = projectRepository;
 	}
 
-	// Ajouter un projet
 	public Project addProject(Project project) {
 		return projectRepository.save(project);
 	}
 
-	// Récupérer tous les projets
 	public List<Project> getAllProjects() {
 		return projectRepository.findAll();
 	}
 
-	// Récupérer un projet par ID
-	public Optional<Project> getProjectById(Long id) {
+	public Optional<Project> getProjectById(int id) {
 		return projectRepository.findById(id);
 	}
 
-	// Récupérer un projet par libellé
 	public Project getProjectByLibelle(String libelle) {
 		return projectRepository.findByLibelle(libelle);
 	}
 
-	// Mettre à jour un projet
-	public Project updateProject(Long id, Project updatedProject) {
+	public Project updateProject(int id, Project updatedProject) {
 		Optional<Project> existingProject = projectRepository.findById(id);
 		if (existingProject.isPresent()) {
 			Project project = existingProject.get();
@@ -53,13 +48,11 @@ public class ProjectService {
 		throw new RuntimeException("Projet non trouvé avec l'ID : " + id);
 	}
 
-	// Supprimer un projet par ID
-	public void deleteProjectById(Long id) {
+	public void deleteProjectById(int id) {
 		projectRepository.deleteById(id);
 	}
 
-	// Ajouter une compétence à un projet
-	public void addCompetenceToProject(Long projectId, Competence competence) {
+	public void addCompetenceToProject(int projectId, Competence competence) {
 		Optional<Project> projectOptional = projectRepository.findById(projectId);
 		if (projectOptional.isPresent()) {
 			Project project = projectOptional.get();

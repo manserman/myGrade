@@ -3,44 +3,41 @@ package priv.mansour.school.services;
 import java.util.List;
 import java.util.Optional;
 
-import javax.naming.spi.DirStateFactory.Result;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import priv.mansour.school.entity.Competence;
 import priv.mansour.school.entity.Project;
-import priv.mansour.school.entity.Resultat;
 import priv.mansour.school.entity.ResultatEnum;
 import priv.mansour.school.entity.Student;
+import priv.mansour.school.repository.CompetenceRepository;
+import priv.mansour.school.repository.ProjectRepository;
 import priv.mansour.school.repository.StudentRepository;
 
 @Service
 public class StudentService {
 
 	private final StudentRepository studentRepository;
+	private final ProjectRepository projectRepository;
 
 	@Autowired
-	public StudentService(StudentRepository studentRepository) {
+	public StudentService(StudentRepository studentRepository, ProjectRepository projectRepository) {
 		this.studentRepository = studentRepository;
+		this.projectRepository = projectRepository;
 	}
 
-	// Ajouter un étudiant
 	public Student addStudent(Student student) {
 		return studentRepository.save(student);
 	}
 
-	// Récupérer tous les étudiants
 	public List<Student> getAllStudents() {
 		return studentRepository.findAll();
 	}
 
-	// Récupérer un étudiant par ID
 	public Optional<Student> getStudentById(int id) {
 		return studentRepository.findById(id);
 	}
 
-	// Mettre à jour un étudiant
 	public Student updateStudent(int id, Student updatedStudent) {
 		Optional<Student> existingStudent = studentRepository.findById(id);
 		if (existingStudent.isPresent()) {
@@ -62,6 +59,17 @@ public class StudentService {
 		throw new RuntimeException("Student non trouvé avec l'ID : " + id);
 	}
 
+	public Student addStudentResult(int id, String projetlib, ResultatEnum result) {
+		Optional<Project> existingProject = projectRepository.findById(id);
+		if (existingProject.isPresent()) {
+			Student student = null;
+			for (Competence c : existingProject.get().getCompetences()) {
+				student = addStudentResult(id, c, result);
+			}
+		}
+		throw new RuntimeException("Student non trouvé avec l'ID : " + id);
+	}
+
 	public Student addStudentResult(int id, Competence comptence, ResultatEnum result) {
 		Optional<Student> existingStudent = studentRepository.findById(id);
 		if (existingStudent.isPresent()) {
@@ -72,7 +80,6 @@ public class StudentService {
 		throw new RuntimeException("Student non trouvé avec l'ID : " + id);
 	}
 
-	// Supprimer un étudiant par ID
 	public void deleteStudentById(int id) {
 		studentRepository.deleteById(id);
 	}

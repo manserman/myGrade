@@ -19,22 +19,18 @@ public class AdminService {
 		this.adminRepository = adminRepository;
 	}
 
-	// Ajouter un admin
 	public Admin addAdmin(Admin admin) {
 		return adminRepository.save(admin);
 	}
 
-	// Récupérer tous les admins
 	public List<Admin> getAllAdmins() {
 		return adminRepository.findAll();
 	}
 
-	// Récupérer un admin par ID
 	public Optional<Admin> getAdminById(int id) {
 		return adminRepository.findById(id);
 	}
 
-	// Mettre à jour un admin
 	public Admin updateAdmin(int id, Admin updatedAdmin) {
 		Optional<Admin> existingAdmin = adminRepository.findById(id);
 		if (existingAdmin.isPresent()) {
@@ -47,7 +43,6 @@ public class AdminService {
 		throw new RuntimeException("Admin non trouvé avec l'ID : " + id);
 	}
 
-	// Supprimer un admin par ID
 	public void deleteAdminById(int id) {
 		adminRepository.deleteById(id);
 	}

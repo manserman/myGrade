@@ -2,10 +2,12 @@ package priv.mansour.school.entity;
 
 import jakarta.persistence.Id;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Setter
 @Getter
+@NoArgsConstructor
 public abstract class User {
 	@Id
 	private int id;

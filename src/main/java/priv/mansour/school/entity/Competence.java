@@ -7,11 +7,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Document
 @AllArgsConstructor
-
+@NoArgsConstructor
 @Setter
 @Getter
 public class Competence {
