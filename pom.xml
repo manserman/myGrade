@@ -12,7 +12,7 @@
 	<groupId>priv.mansour</groupId>
 	<artifactId>school</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	
 	<name>school</name>
 	<description>Project for students grade management.</description>
 	<url />
