@@ -1,12 +1,12 @@
 package priv.mansour.school.services;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import priv.mansour.school.entity.Admin;
+import priv.mansour.school.exceptions.ResourceNotFoundException;
 import priv.mansour.school.repository.AdminRepository;
 
 @Service
@@ -20,6 +20,9 @@ public class AdminService {
 	}
 
 	public Admin addAdmin(Admin admin) {
+		if (admin == null || admin.getPrenom().isBlank() || admin.getNom().isBlank()) {
+			throw new IllegalArgumentException("Please provide a valid administrator");
+		}
 		return adminRepository.save(admin);
 	}
 
@@ -27,23 +30,26 @@ public class AdminService {
 		return adminRepository.findAll();
 	}
 
-	public Optional<Admin> getAdminById(int id) {
-		return adminRepository.findById(id);
+	public Admin getAdminById(int id) {
+		Admin admin = adminRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Admin non trouvé avec l'ID : " + id));
+		return admin;
 	}
 
 	public Admin updateAdmin(int id, Admin updatedAdmin) {
-		Optional<Admin> existingAdmin = adminRepository.findById(id);
-		if (existingAdmin.isPresent()) {
-			Admin admin = existingAdmin.get();
-			admin.setNom(updatedAdmin.getNom());
-			admin.setPrenom(updatedAdmin.getPrenom());
-			// Ajoutez d'autres champs à mettre à jour si nécessaire
-			return adminRepository.save(admin);
-		}
-		throw new RuntimeException("Admin non trouvé avec l'ID : " + id);
+		Admin admin = adminRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Admin non trouvé avec l'ID : " + id));
+		admin.setNom(updatedAdmin.getNom());
+		admin.setPrenom(updatedAdmin.getPrenom());
+		return adminRepository.save(admin);
+
 	}
 
 	public void deleteAdminById(int id) {
+		if (!adminRepository.existsById(id)) {
+			throw new ResourceNotFoundException("Admin non trouvé avec l'ID : " + id);
+		}
 		adminRepository.deleteById(id);
 	}
+
 }

@@ -1,13 +1,21 @@
 package priv.mansour.school.controller;
 
+import java.util.List;
+
+import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import priv.mansour.school.entity.Admin;
 import priv.mansour.school.services.AdminService;
-
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/admins")
@@ -32,18 +40,14 @@ public class AdminController {
 
 	@GetMapping("/{id}")
 	public ResponseEntity<Admin> getAdminById(@PathVariable int id) {
-		Optional<Admin> admin = adminService.getAdminById(id);
-		return admin.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+		return adminService.getAdminById(id).
+				map(ResponseEntity::ok)
+				.orElseThrow(() -> new ResourceNotFoundException("user not found"));
 	}
 
 	@PutMapping("/{id}")
 	public ResponseEntity<Admin> updateAdmin(@PathVariable int id, @RequestBody Admin updatedAdmin) {
-		try {
-			Admin updated = adminService.updateAdmin(id, updatedAdmin);
-			return ResponseEntity.ok(updated);
-		} catch (RuntimeException e) {
-			return ResponseEntity.notFound().build();
-		}
+		return ResponseEntity.ok(adminService.updateAdmin(id, updatedAdmin));
 	}
 
 	@DeleteMapping("/{id}")

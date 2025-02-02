@@ -1,21 +1,23 @@
 package priv.mansour.school.entity;
 
+import jakarta.annotation.Nonnull;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.MappedSuperclass;
 
-@Setter
-@Getter
-@NoArgsConstructor
+@MappedSuperclass
 @Inheritance(strategy = InheritanceType.JOINED) 
 public abstract class User {
+	
+	@Nonnull
 	@Id
 	private int id;
+	@Nonnull
 	private String nom;
+	@Nonnull
 	private String prenom;
+	@Nonnull
 	private Role role;
 
 	public User(String nom, String prenom, Role role) {
