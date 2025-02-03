@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,9 +25,10 @@ public class Project {
 
 	@DBRef
 	private List<Competence> competences;
+	@NotBlank(message = "Veillez fournir une description pour le projet.")
 	private String description;
+	@NotBlank(message = "Veillez fournir un libelle pour le projet.")
 	private String libelle;
-
 	@DBRef
 	Teacher teacher;
 

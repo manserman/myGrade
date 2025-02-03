@@ -6,20 +6,17 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Document
 @Getter
 @Setter
-@NoArgsConstructor
 public class Teacher extends User {
 	@DBRef
 	private List<Project> projets;
 
 	public Teacher(String nom, String prenom) {
 		super(nom, prenom, Role.TEACHER);
-		// TODO Auto-generated constructor stub
 	}
 
 }
