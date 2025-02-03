@@ -1,21 +1,24 @@
 package priv.mansour.school.entity;
 
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.MappedSuperclass;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class User {
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Min(value = 1, message = "L'ID doit être supérieur à 0")
-	private int id;
+	private Integer id;
+
 
 	@NotBlank(message = "Fournir un nom valide")
 	private String nom;

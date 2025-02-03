@@ -2,8 +2,6 @@ package priv.mansour.school.entity;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import lombok.NoArgsConstructor;
-
 @Document
 public class Admin extends User {
 

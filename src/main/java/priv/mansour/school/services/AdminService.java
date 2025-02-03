@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import jakarta.validation.constraints.NotNull;
 import priv.mansour.school.entity.Admin;
 import priv.mansour.school.exceptions.ResourceNotFoundException;
 import priv.mansour.school.repository.AdminRepository;
@@ -20,9 +21,6 @@ public class AdminService {
 	}
 
 	public Admin addAdmin(Admin admin) {
-		if (admin == null || admin.getPrenom().isBlank() || admin.getNom().isBlank()) {
-			throw new IllegalArgumentException("Please provide a valid administrator");
-		}
 		return adminRepository.save(admin);
 	}
 
@@ -30,13 +28,13 @@ public class AdminService {
 		return adminRepository.findAll();
 	}
 
-	public Admin getAdminById(int id) {
+	public Admin getAdminById(@NotNull int id) {
 		Admin admin = adminRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Admin non trouvé avec l'ID : " + id));
 		return admin;
 	}
 
-	public Admin updateAdmin(int id, Admin updatedAdmin) {
+	public Admin updateAdmin(@NotNull int id, Admin updatedAdmin) {
 		Admin admin = adminRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Admin non trouvé avec l'ID : " + id));
 		admin.setNom(updatedAdmin.getNom());
@@ -45,7 +43,7 @@ public class AdminService {
 
 	}
 
-	public void deleteAdminById(int id) {
+	public void deleteAdminById(@NotNull int id) {
 		if (!adminRepository.existsById(id)) {
 			throw new ResourceNotFoundException("Admin non trouvé avec l'ID : " + id);
 		}
