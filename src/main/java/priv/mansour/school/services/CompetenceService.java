@@ -1,15 +1,20 @@
 package priv.mansour.school.services;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import priv.mansour.school.entity.Competence;
+import priv.mansour.school.exceptions.ResourceNotFoundException;
 import priv.mansour.school.repository.CompetenceRepository;
 
 @Service
+@Validated
 public class CompetenceService {
 
 	private final CompetenceRepository competenceRepository;
@@ -19,7 +24,7 @@ public class CompetenceService {
 		this.competenceRepository = competenceRepository;
 	}
 
-	public Competence addCompetence(Competence competence) {
+	public Competence addCompetence(@Valid Competence competence) {
 		if (competenceRepository.findByLibelle(competence.getLibelle()) != null) {
 			throw new RuntimeException("Une compétence avec ce libellé existe déjà.");
 		}
@@ -30,26 +35,26 @@ public class CompetenceService {
 		return competenceRepository.findAll();
 	}
 
-	public Optional<Competence> getCompetenceById(int id) {
-		return competenceRepository.findById(id);
+	public Competence getCompetenceById(@Min(1) int id) {
+		return competenceRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Imposisble de toruver la compétence: " + id));
 	}
 
-	public Competence getCompetenceByLibelle(String libelle) {
-		return competenceRepository.findByLibelle(libelle);
+	public Competence getCompetenceByLibelle(@NotBlank String libelle) {
+		return competenceRepository.findByLibelle(libelle)
+				.orElseThrow(() -> new ResourceNotFoundException("Imposisble de toruver la compétence: " + libelle));
 	}
 
-	public Competence updateCompetence(int id, Competence updatedCompetence) {
-		Optional<Competence> existingCompetence = competenceRepository.findById(id);
-		if (existingCompetence.isPresent()) {
-			Competence competence = existingCompetence.get();
-			competence.setLibelle(updatedCompetence.getLibelle());
-			competence.setDescription(updatedCompetence.getDescription());
-			return competenceRepository.save(competence);
-		}
-		throw new RuntimeException("Competence non trouvée avec l'ID : " + id);
+	public Competence updateCompetence(@Min(1) int id, @Valid Competence updatedCompetence) {
+		Competence competence = getCompetenceById(id);
+		competence.setLibelle(updatedCompetence.getLibelle());
+		competence.setDescription(updatedCompetence.getDescription());
+		return competenceRepository.save(competence);
+
 	}
 
-	public void deleteCompetenceById(int id) {
+	public void deleteCompetenceById(@Min(1) int id) {
+		getCompetenceById(id);
 		competenceRepository.deleteById(id);
 	}
 }

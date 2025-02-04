@@ -1,13 +1,21 @@
 package priv.mansour.school.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import priv.mansour.school.entity.Competence;
 import priv.mansour.school.services.CompetenceService;
-
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/competences")
@@ -22,11 +30,8 @@ public class CompetenceController {
 
 	@PostMapping("/new")
 	public ResponseEntity<Competence> addCompetence(@RequestBody Competence competence) {
-		try {
-			return ResponseEntity.ok(competenceService.addCompetence(competence));
-		} catch (RuntimeException e) {
-			return ResponseEntity.badRequest().body(null);
-		}
+		return ResponseEntity.ok(competenceService.addCompetence(competence));
+
 	}
 
 	@GetMapping("/getAll")
@@ -36,27 +41,20 @@ public class CompetenceController {
 
 	@GetMapping("/{id}")
 	public ResponseEntity<Competence> getCompetenceById(@PathVariable int id) {
-		Optional<Competence> competence = competenceService.getCompetenceById(id);
-		return competence.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+		return ResponseEntity.ok(competenceService.getCompetenceById(id));
 	}
 
 	@GetMapping("/by-libelle")
 	public ResponseEntity<Competence> getCompetenceByLibelle(@RequestParam String libelle) {
-		Competence competence = competenceService.getCompetenceByLibelle(libelle);
-		if (competence != null) {
-			return ResponseEntity.ok(competence);
-		}
-		return ResponseEntity.notFound().build();
+
+		return ResponseEntity.ok(competenceService.getCompetenceByLibelle(libelle));
 	}
 
 	@PutMapping("/{id}")
 	public ResponseEntity<Competence> updateCompetence(@PathVariable int id,
 			@RequestBody Competence updatedCompetence) {
-		try {
-			return ResponseEntity.ok(competenceService.updateCompetence(id, updatedCompetence));
-		} catch (RuntimeException e) {
-			return ResponseEntity.notFound().build();
-		}
+
+		return ResponseEntity.ok(competenceService.updateCompetence(id, updatedCompetence));
 	}
 
 	@DeleteMapping("/{id}")

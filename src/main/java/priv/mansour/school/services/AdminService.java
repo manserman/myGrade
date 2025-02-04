@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import jakarta.validation.constraints.NotNull;
 import priv.mansour.school.entity.Admin;
@@ -11,6 +12,7 @@ import priv.mansour.school.exceptions.ResourceNotFoundException;
 import priv.mansour.school.repository.AdminRepository;
 
 @Service
+@Validated
 public class AdminService {
 
 	private final AdminRepository adminRepository;
