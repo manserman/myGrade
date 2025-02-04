@@ -1,5 +1,7 @@
 package priv.mansour.school.entity;
 
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -19,7 +21,6 @@ public abstract class User {
 	@Min(value = 1, message = "L'ID doit être supérieur à 0")
 	private Integer id;
 
-
 	@NotBlank(message = "Fournir un nom valide")
 	private String nom;
 
@@ -27,20 +28,17 @@ public abstract class User {
 	private String prenom;
 
 	@NotNull(message = "Le rôle ne peut pas être nul")
-	private Role role;
+	@Enumerated(EnumType.STRING)
+	private final Role role;
 
 	public User(String nom, String prenom, Role role) {
-		this.setNom(nom);
-		this.setPrenom(prenom);
-		this.setRole(role);
+		this.nom=nom;
+		this.prenom=prenom;
+		this.role = role;
 	}
 
 	public Role getRole() {
 		return role;
-	}
-
-	public void setRole(Role role) {
-		this.role = role;
 	}
 
 	public String getPrenom() {
