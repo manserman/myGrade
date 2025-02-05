@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import priv.mansour.school.entity.Competence;
 
-public interface CompetenceRepository extends MongoRepository<Competence, Integer> {
+public interface CompetenceRepository extends MongoRepository<Competence, String> {
 	Optional<Competence> findByLibelle(String libelle);
 
 }

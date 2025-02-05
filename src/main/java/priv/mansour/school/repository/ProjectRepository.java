@@ -7,7 +7,7 @@ import priv.mansour.school.entity.Project;
 
 
 @Repository
-public interface ProjectRepository extends MongoRepository< Project, Integer> {
+public interface ProjectRepository extends MongoRepository< Project, String> {
 	Project findByLibelle(String libelle);
 
 }
