@@ -1,14 +1,20 @@
 package priv.mansour.school.services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import priv.mansour.school.entity.Project;
+import org.springframework.validation.annotation.Validated;
+
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import priv.mansour.school.entity.Competence;
+import priv.mansour.school.entity.Project;
+import priv.mansour.school.exceptions.DuplicateKeyException;
+import priv.mansour.school.exceptions.ResourceNotFoundException;
 import priv.mansour.school.repository.ProjectRepository;
 
-import java.util.List;
-import java.util.Optional;
-
+@Validated
 @Service
 public class ProjectService {
 
@@ -19,7 +25,7 @@ public class ProjectService {
 		this.projectRepository = projectRepository;
 	}
 
-	public Project addProject(Project project) {
+	public Project addProject(@Valid Project project) {
 		return projectRepository.save(project);
 	}
 
@@ -27,41 +33,42 @@ public class ProjectService {
 		return projectRepository.findAll();
 	}
 
-	public Optional<Project> getProjectById(int id) {
-		return projectRepository.findById(id);
+	public Project getProjectById(@NotBlank String id) {
+		return projectRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Projet non trouvé avec l'ID : " + id));
 	}
 
-	public Project getProjectByLibelle(String libelle) {
-		return projectRepository.findByLibelle(libelle);
+	public Project getProjectByLibelle(@NotBlank String libelle) {
+		return projectRepository.findByLibelle(libelle)
+				.orElseThrow(() -> new ResourceNotFoundException("Projet non trouvé avec le libelle : " + libelle));
 	}
 
-	public Project updateProject(int id, Project updatedProject) {
-		Optional<Project> existingProject = projectRepository.findById(id);
-		if (existingProject.isPresent()) {
-			Project project = existingProject.get();
-			project.setLibelle(updatedProject.getLibelle());
-			project.setDescription(updatedProject.getDescription());
-			project.setCompetences(updatedProject.getCompetences());
-			project.setTeacher(updatedProject.getTeacher());
-			return projectRepository.save(project);
+	public Project updateProject(@NotBlank String id, @Valid Project updatedProject) {
+		Project project = getProjectById(id);
+		project.setLibelle(updatedProject.getLibelle());
+		project.setDescription(updatedProject.getDescription());
+		project.setCompetences(updatedProject.getCompetences());
+		project.setTeacher(updatedProject.getTeacher());
+		return projectRepository.save(project);
+	}
+
+	public void deleteProjectById(@NotBlank String id) {
+		if (!projectRepository.existsById(id)) {
+			throw new ResourceNotFoundException("Projet non trouvé avec l'ID : " + id);
 		}
-		throw new RuntimeException("Projet non trouvé avec l'ID : " + id);
-	}
 
-	public void deleteProjectById(int id) {
 		projectRepository.deleteById(id);
 	}
 
-	public void addCompetenceToProject(int projectId, Competence competence) {
-		Optional<Project> projectOptional = projectRepository.findById(projectId);
-		if (projectOptional.isPresent()) {
-			Project project = projectOptional.get();
-			if (!project.getCompetences().contains(competence)) {
-				project.getCompetences().add(competence);
-				projectRepository.save(project);
-			}
-		} else {
-			throw new RuntimeException("Projet non trouvé avec l'ID : " + projectId);
+	public Project addCompetenceToProject(@NotBlank String projectId, @Valid Competence competence) {
+
+		Project project = getProjectById(projectId);
+		if (project.getCompetences().contains(competence)) {
+			throw new DuplicateKeyException(
+					"Le projet " + projectId + " Contient déjà la compétence " + competence.getId());
 		}
+		project.getCompetences().add(competence);
+		return projectRepository.save(project);
+
 	}
 }

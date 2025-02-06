@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import priv.mansour.school.entity.Competence;
 import priv.mansour.school.exceptions.ResourceNotFoundException;
@@ -35,7 +34,7 @@ public class CompetenceService {
 		return competenceRepository.findAll();
 	}
 
-	public Competence getCompetenceById(@Min(1) int id) {
+	public Competence getCompetenceById(@NotBlank String id) {
 		return competenceRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Imposisble de toruver la compétence: " + id));
 	}
@@ -45,7 +44,7 @@ public class CompetenceService {
 				.orElseThrow(() -> new ResourceNotFoundException("Imposisble de toruver la compétence: " + libelle));
 	}
 
-	public Competence updateCompetence(@Min(1) int id, @Valid Competence updatedCompetence) {
+	public Competence updateCompetence(@NotBlank String id, @Valid Competence updatedCompetence) {
 		Competence competence = getCompetenceById(id);
 		competence.setLibelle(updatedCompetence.getLibelle());
 		competence.setDescription(updatedCompetence.getDescription());
@@ -53,7 +52,7 @@ public class CompetenceService {
 
 	}
 
-	public void deleteCompetenceById(@Min(1) int id) {
+	public void deleteCompetenceById(@NotBlank String id) {
 		getCompetenceById(id);
 		competenceRepository.deleteById(id);
 	}

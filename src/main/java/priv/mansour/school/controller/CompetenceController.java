@@ -40,7 +40,7 @@ public class CompetenceController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<Competence> getCompetenceById(@PathVariable int id) {
+	public ResponseEntity<Competence> getCompetenceById(@PathVariable String id) {
 		return ResponseEntity.ok(competenceService.getCompetenceById(id));
 	}
 
@@ -51,14 +51,14 @@ public class CompetenceController {
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<Competence> updateCompetence(@PathVariable int id,
+	public ResponseEntity<Competence> updateCompetence(@PathVariable String id,
 			@RequestBody Competence updatedCompetence) {
 
 		return ResponseEntity.ok(competenceService.updateCompetence(id, updatedCompetence));
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> deleteCompetenceById(@PathVariable int id) {
+	public ResponseEntity<Void> deleteCompetenceById(@PathVariable String id) {
 		competenceService.deleteCompetenceById(id);
 		return ResponseEntity.noContent().build();
 	}

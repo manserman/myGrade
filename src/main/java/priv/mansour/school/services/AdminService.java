@@ -37,7 +37,7 @@ public class AdminService {
 		return admin;
 	}
 
-	public Admin updateAdmin(@NotBlank String id, Admin updatedAdmin) {
+	public Admin updateAdmin(@NotBlank String id,@Valid Admin updatedAdmin) {
 		Admin admin = adminRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Admin non trouvé avec l'ID : " + id));
 		admin.setNom(updatedAdmin.getNom());
