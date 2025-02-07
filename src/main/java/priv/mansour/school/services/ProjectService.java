@@ -2,6 +2,7 @@ package priv.mansour.school.services;
 
 import static priv.mansour.school.utils.Constants.PROJECT;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import priv.mansour.school.entity.Competence;
 import priv.mansour.school.entity.Project;
+import priv.mansour.school.exceptions.DuplicateKeyException;
 import priv.mansour.school.exceptions.ResourceNotFoundException;
 import priv.mansour.school.logger.GlobalLogger;
 import priv.mansour.school.repository.ProjectRepository;
@@ -57,10 +59,8 @@ public class ProjectService {
 		GlobalLogger.infoAction("Updating", PROJECT, "ID: " + id);
 
 		Project project = getProjectById(id);
-		project.setLibelle(updatedProject.getLibelle());
-		project.setDescription(updatedProject.getDescription());
+
 		project.setCompetences(updatedProject.getCompetences());
-		project.setTeacher(updatedProject.getTeacher());
 
 		Project updated = projectRepository.save(project);
 		GlobalLogger.infoSuccess("Updated", PROJECT, id);
@@ -80,19 +80,47 @@ public class ProjectService {
 
 	public Project addCompetenceToProject(@NotBlank String projectId, @Valid Competence competence) {
 		GlobalLogger.infoAction("Adding Competence", PROJECT,
-				"Project ID: " + projectId + " Competence: " + competence);
+				"Project ID: " + projectId + " Competence: " + competence.getLibelle());
 
 		Project project = getProjectById(projectId);
-		/*
-		 * if (project.getCompetences().contains(competence)) { throw new
-		 * DuplicateKeyException(PROJECT, "ADD_COMPETENCE", "Project " + projectId +
-		 * " already contains competence " + competence.getId()); }
-		 */
+
+		if (project.getCompetences() == null) {
+			project.setCompetences(new ArrayList<>());
+		}
+
+		boolean projectExists = project.getCompetences().stream()
+				.anyMatch(existingCompetence -> existingCompetence.getLibelle().equals(competence.getLibelle()));
+
+		if (projectExists) {
+			GlobalLogger.warnDuplicate("Competence",
+					"Competence [" + competence.getLibelle() + "] already exists in project [" + projectId + "]");
+			throw new DuplicateKeyException("Competence already exists in this project.", "Project", projectId);
+		}
 
 		project.getCompetences().add(competence);
 		Project updatedProject = projectRepository.save(project);
+
 		GlobalLogger.infoSuccess("Added Competence", PROJECT,
-				"Project ID: " + projectId + " Competence: " + competence);
+				"Project ID: " + projectId + " Competence: " + competence.getLibelle());
+
 		return updatedProject;
 	}
+
+	public List<Competence> getCompetences(@NotBlank String projectId) {
+		GlobalLogger.infoAction("Fetching Competences", PROJECT, "Project ID: " + projectId);
+
+		Project project = getProjectById(projectId);
+
+		List<Competence> competences = project.getCompetences();
+
+		if (competences == null || competences.isEmpty()) {
+			GlobalLogger.warnNotFound("Competences", "No competences found for project [" + projectId + "]");
+		} else {
+			GlobalLogger.infoSuccess("Fetched Competences", PROJECT,
+					"Project ID: " + projectId + " - " + competences.size() + " competences found");
+		}
+
+		return competences;
+	}
+
 }

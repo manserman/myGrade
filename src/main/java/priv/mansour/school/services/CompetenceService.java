@@ -56,9 +56,6 @@ public class CompetenceService {
 		GlobalLogger.infoAction("Updating", COMPETENCE, "ID: " + id);
 
 		Competence competence = getCompetenceById(id);
-		competence.setLibelle(updatedCompetence.getLibelle());
-		competence.setDescription(updatedCompetence.getDescription());
-
 		Competence updated = competenceRepository.save(competence);
 		GlobalLogger.infoSuccess("Updated", COMPETENCE, id);
 		return updated;

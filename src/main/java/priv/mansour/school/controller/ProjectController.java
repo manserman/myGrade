@@ -75,4 +75,11 @@ public class ProjectController {
 		projectService.addCompetenceToProject(id, competence);
 		return ResponseEntity.ok().build();
 	}
+
+	@GetMapping("/{id}/competences")
+	public ResponseEntity<List<Competence>> getCompetences(@PathVariable String projectId) {
+		GlobalLogger.infoAction("Fetching competences relatade to ", PROJECT, "Project ID: " + projectId);
+
+		return ResponseEntity.ok(projectService.getCompetences(projectId));
+	}
 }
