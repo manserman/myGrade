@@ -45,6 +45,10 @@ public class GlobalLogger {
 	public static void warnNotFound(String entity, String id) {
 		log.warn("[{}] {} not found - ID: {}", DateUtil.now(), entity, id);
 	}
+	public static void warnDuplicate(String entity, String id) {
+		log.warn("[{}] {} Already Exists- ID: {}", DateUtil.now(), entity, id);
+	}
+
 
 	public static void error(String entity, String action, Exception ex) {
 		log.error("[{}] Error while processing {} - Action: {} - Message: {}", DateUtil.now(), entity, action,
