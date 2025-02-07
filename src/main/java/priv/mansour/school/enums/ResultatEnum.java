@@ -1,4 +1,4 @@
-package priv.mansour.school.entity;
+package priv.mansour.school.enums;
 
 public enum ResultatEnum {
 	ACQUIRE, IN_PROCESS, FAILED;

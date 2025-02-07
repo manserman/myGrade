@@ -1,4 +1,4 @@
-package priv.mansour.school.entity;
+package priv.mansour.school.enums;
 
 /**
  * @author mohamadou.mansour enums of users Roles

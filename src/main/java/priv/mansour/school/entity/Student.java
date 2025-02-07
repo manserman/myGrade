@@ -8,6 +8,9 @@ import java.util.Map;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import priv.mansour.school.enums.ResultatEnum;
+import priv.mansour.school.enums.Role;
+
 @Document
 public class Student extends User {
 

@@ -2,6 +2,8 @@ package priv.mansour.school.entity;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import priv.mansour.school.enums.Role;
+
 @Document
 public class Admin extends User {
 
