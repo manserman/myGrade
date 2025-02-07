@@ -1,6 +1,6 @@
 package priv.mansour.school.entity;
 
-import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -14,7 +14,7 @@ import priv.mansour.school.enums.Role;
 @Setter
 public class Teacher extends User {
 	@DBRef
-	private List<Project> projets;
+	private Set<Project> projets;
 
 	public Teacher(String nom, String prenom) {
 		super(nom, prenom, Role.TEACHER);

@@ -8,24 +8,23 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 
 @Document
-@AllArgsConstructor
-@NoArgsConstructor
-@Setter
-@Getter
+@AllArgsConstructor // ✅ Required to set all final fields
+@Getter // ✅ Only getters, no setters (immutability)
 @EqualsAndHashCode
 @ToString(exclude = "id")
 public class Competence {
+
 	@Id
-	private int id;
-	@NotBlank(message = "Veillez fournir une description pour le projet.")
-	private String description;
+	private final String id;
+
+	@NotBlank(message = "Veuillez fournir une description pour le projet.")
+	private final String description;
+
 	@Indexed(unique = true)
-	@NotBlank(message = "Veillez fournir un libelle pour le projet.")
-	private String libelle;
+	@NotBlank(message = "Veuillez fournir un libellé pour le projet.")
+	private final String libelle;
 
 }
