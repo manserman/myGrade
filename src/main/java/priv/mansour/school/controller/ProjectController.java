@@ -6,15 +6,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import priv.mansour.school.entity.Competence;
 import priv.mansour.school.entity.Project;
@@ -34,8 +26,10 @@ public class ProjectController {
 
 	@PostMapping("/new")
 	public ResponseEntity<Project> addProject(@RequestBody Project project) {
-		GlobalLogger.infoCreate(PROJECT, project);
-		return ResponseEntity.ok(projectService.addProject(project));
+		GlobalLogger.infoCreate(PROJECT, "Creating new project: " + project.getLibelle());
+		Project createdProject = projectService.addProject(project);
+		GlobalLogger.infoSuccess("Created", PROJECT, "Project ID: " + createdProject.getId());
+		return ResponseEntity.ok(createdProject);
 	}
 
 	@GetMapping("/all")
@@ -46,40 +40,48 @@ public class ProjectController {
 
 	@GetMapping("/{id}")
 	public ResponseEntity<Project> getProjectById(@PathVariable String id) {
-		GlobalLogger.infoRead(PROJECT, id);
+		GlobalLogger.infoRead(PROJECT, "Fetching project by ID: " + id);
 		return ResponseEntity.ok(projectService.getProjectById(id));
 	}
 
 	@GetMapping("/by-libelle")
 	public ResponseEntity<Project> getProjectByLibelle(@RequestParam String libelle) {
-		GlobalLogger.infoRead(PROJECT, "Libelle: " + libelle);
+		GlobalLogger.infoRead(PROJECT, "Fetching project by Libelle: " + libelle);
 		return ResponseEntity.ok(projectService.getProjectByLibelle(libelle));
 	}
 
 	@PutMapping("/{id}")
 	public ResponseEntity<Project> updateProject(@PathVariable String id, @RequestBody Project updatedProject) {
-		GlobalLogger.infoUpdate(PROJECT, id, updatedProject);
-		return ResponseEntity.ok(projectService.updateProject(id, updatedProject));
+		GlobalLogger.infoUpdate(PROJECT, "Updating project ID: " + id);
+		Project updated = projectService.updateProject(id, updatedProject);
+		GlobalLogger.infoSuccess("Updated", PROJECT, "Project ID: " + updated.getId());
+		return ResponseEntity.ok(updated);
 	}
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deleteProjectById(@PathVariable String id) {
-		GlobalLogger.infoDelete(PROJECT, id);
+		GlobalLogger.infoDelete(PROJECT, "Deleting project ID: " + id);
 		projectService.deleteProjectById(id);
+		GlobalLogger.infoSuccess("Deleted", PROJECT, "Project ID: " + id);
 		return ResponseEntity.noContent().build();
 	}
 
 	@PostMapping("/{id}/competences")
-	public ResponseEntity<Void> addCompetenceToProject(@PathVariable String id, @RequestBody Competence competence) {
-		GlobalLogger.infoAction("Adding Competence", PROJECT, "Project ID: " + id + " Competence: " + competence);
-		projectService.addCompetenceToProject(id, competence);
-		return ResponseEntity.ok().build();
+	public ResponseEntity<Project> addCompetenceToProject(@PathVariable String id, @RequestBody Competence competence) {
+		GlobalLogger.infoAction("Adding Competence", PROJECT,
+				"Project ID: " + id + ", Competence: " + competence.getLibelle());
+		Project updatedProject = projectService.addCompetenceToProject(id, competence);
+		GlobalLogger.infoSuccess("Added Competence", PROJECT,
+				"Project ID: " + id + ", Competence: " + competence.getLibelle());
+		return ResponseEntity.ok(updatedProject);
 	}
 
 	@GetMapping("/{id}/competences")
-	public ResponseEntity<List<Competence>> getCompetences(@PathVariable String projectId) {
-		GlobalLogger.infoAction("Fetching competences relatade to ", PROJECT, "Project ID: " + projectId);
-
-		return ResponseEntity.ok(projectService.getCompetences(projectId));
+	public ResponseEntity<List<Competence>> getCompetences(@PathVariable String id) {
+		GlobalLogger.infoAction("Fetching Competences", PROJECT, "Project ID: " + id);
+		List<Competence> competences = projectService.getCompetences(id);
+		GlobalLogger.infoSuccess("Fetched Competences", PROJECT,
+				"Project ID: " + id + ", Competence Count: " + competences.size());
+		return ResponseEntity.ok(competences);
 	}
 }
