@@ -1,5 +1,7 @@
 package priv.mansour.school.controller;
 
+import static priv.mansour.school.utils.Constants.COMPETENCE;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import priv.mansour.school.entity.Competence;
+import priv.mansour.school.logger.GlobalLogger;
 import priv.mansour.school.services.CompetenceService;
 
 @RestController
@@ -30,35 +33,43 @@ public class CompetenceController {
 
 	@PostMapping("/new")
 	public ResponseEntity<Competence> addCompetence(@RequestBody Competence competence) {
-		return ResponseEntity.ok(competenceService.addCompetence(competence));
-
+		GlobalLogger.infoCreate(COMPETENCE, competence);
+		Competence createdCompetence = competenceService.addCompetence(competence);
+		return ResponseEntity.ok(createdCompetence);
 	}
 
 	@GetMapping("/getAll")
 	public ResponseEntity<List<Competence>> getAllCompetences() {
-		return ResponseEntity.ok(competenceService.getAllCompetences());
+		GlobalLogger.infoReadAll(COMPETENCE);
+		List<Competence> competences = competenceService.getAllCompetences();
+		return ResponseEntity.ok(competences);
 	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<Competence> getCompetenceById(@PathVariable String id) {
-		return ResponseEntity.ok(competenceService.getCompetenceById(id));
+		GlobalLogger.infoRead(COMPETENCE, id);
+		Competence competence = competenceService.getCompetenceById(id);
+		return ResponseEntity.ok(competence);
 	}
 
 	@GetMapping("/by-libelle")
 	public ResponseEntity<Competence> getCompetenceByLibelle(@RequestParam String libelle) {
-
-		return ResponseEntity.ok(competenceService.getCompetenceByLibelle(libelle));
+		GlobalLogger.infoAction("Fetching by libelle", COMPETENCE, libelle);
+		Competence competence = competenceService.getCompetenceByLibelle(libelle);
+		return ResponseEntity.ok(competence);
 	}
 
 	@PutMapping("/{id}")
 	public ResponseEntity<Competence> updateCompetence(@PathVariable String id,
 			@RequestBody Competence updatedCompetence) {
-
-		return ResponseEntity.ok(competenceService.updateCompetence(id, updatedCompetence));
+		GlobalLogger.infoUpdate(COMPETENCE, id, updatedCompetence);
+		Competence updated = competenceService.updateCompetence(id, updatedCompetence);
+		return ResponseEntity.ok(updated);
 	}
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deleteCompetenceById(@PathVariable String id) {
+		GlobalLogger.infoDelete(COMPETENCE, id);
 		competenceService.deleteCompetenceById(id);
 		return ResponseEntity.noContent().build();
 	}

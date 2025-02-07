@@ -1,6 +1,7 @@
 package priv.mansour.school.controller;
 
-import java.net.http.HttpRequest;
+import static priv.mansour.school.utils.Constants.STUDENT;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import lombok.extern.slf4j.Slf4j;
 import priv.mansour.school.entity.Student;
+import priv.mansour.school.logger.GlobalLogger;
 import priv.mansour.school.services.StudentService;
 
 @RestController
@@ -30,33 +31,32 @@ public class StudentController {
 	}
 
 	@PostMapping("/new")
-	public ResponseEntity<Student> addStudent(@RequestBody Student student, HttpRequest request) {
-		
+	public ResponseEntity<Student> addStudent(@RequestBody Student student) {
+		GlobalLogger.infoCreate(STUDENT, student);
 		return ResponseEntity.ok(studentService.addStudent(student));
 	}
 
 	@GetMapping("/all")
 	public ResponseEntity<List<Student>> getAllStudents() {
-		log.info("Received GET request to fetch all the  students");
+		GlobalLogger.infoReadAll(STUDENT);
 		return ResponseEntity.ok(studentService.getAllStudents());
 	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<Student> getStudentById(@PathVariable String id) {
-		log.info("Received GET request to fetch  the  student with ID: {}", id);
+		GlobalLogger.infoRead(STUDENT, id);
 		return ResponseEntity.ok(studentService.getStudentById(id));
 	}
 
 	@PutMapping("/{id}")
 	public ResponseEntity<Student> updateStudent(@PathVariable String id, @RequestBody Student updatedStudent) {
-		log.info("Received PUT request to update  the  student with ID: {}", id);
+		GlobalLogger.infoUpdate(STUDENT, id, updatedStudent);
 		return ResponseEntity.ok(studentService.updateStudent(id, updatedStudent));
-
 	}
 
-	@DeleteMapping("/delete/{id}")
+	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deleteStudentById(@PathVariable String id) {
-		log.info("Received DELETE request to delete  the  student with ID: {}", id);
+		GlobalLogger.infoDelete(STUDENT, id);
 		studentService.deleteStudentById(id);
 		return ResponseEntity.noContent().build();
 	}
