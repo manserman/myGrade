@@ -10,7 +10,9 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import priv.mansour.school.entity.Admin;
 import priv.mansour.school.exceptions.ResourceNotFoundException;
+import priv.mansour.school.logger.GlobalLogger;
 import priv.mansour.school.repository.AdminRepository;
+import static priv.mansour.school.utils.Constants.ADMIN;
 
 @Service
 @Validated
@@ -24,33 +26,46 @@ public class AdminService {
 	}
 
 	public Admin addAdmin(@Valid Admin admin) {
-		return adminRepository.save(admin);
+		GlobalLogger.infoAction("Saving", ADMIN, admin);
+		Admin savedAdmin = adminRepository.save(admin);
+		GlobalLogger.infoSuccess("Saved", ADMIN, savedAdmin);
+		return savedAdmin;
 	}
 
 	public List<Admin> getAllAdmins() {
-		return adminRepository.findAll();
+		GlobalLogger.infoAction("Fetching all", ADMIN, "Retrieving all admins from database");
+		List<Admin> admins = adminRepository.findAll();
+		GlobalLogger.infoSuccess("Fetched all", ADMIN, admins.size() + " admins found");
+		return admins;
 	}
 
 	public Admin getAdminById(@NotBlank String id) {
-		Admin admin = adminRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Admin non trouvé avec l'ID : " + id));
-		return admin;
+		GlobalLogger.infoAction("Fetching", ADMIN, "ID: " + id);
+		return adminRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException(ADMIN, "READ", "Admin not found for ID: " + id));
 	}
 
-	public Admin updateAdmin(@NotBlank String id,@Valid Admin updatedAdmin) {
+	public Admin updateAdmin(@NotBlank String id, @Valid Admin updatedAdmin) {
+		GlobalLogger.infoAction("Updating", ADMIN, "ID: " + id);
 		Admin admin = adminRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Admin non trouvé avec l'ID : " + id));
+				.orElseThrow(() -> new ResourceNotFoundException(ADMIN, "UPDATE", "Admin not found for ID: " + id));
+
 		admin.setNom(updatedAdmin.getNom());
 		admin.setPrenom(updatedAdmin.getPrenom());
-		return adminRepository.save(admin);
 
+		Admin updated = adminRepository.save(admin);
+		GlobalLogger.infoSuccess("Updated", ADMIN, id);
+		return updated;
 	}
 
 	public void deleteAdminById(@NotBlank String id) {
-		if (!adminRepository.existsById(id)) {
-			throw new ResourceNotFoundException("Admin non trouvé avec l'ID : " + id);
-		}
-		adminRepository.deleteById(id);
-	}
+		GlobalLogger.infoAction("Deleting", ADMIN, "ID: " + id);
 
+		if (!adminRepository.existsById(id)) {
+			throw new ResourceNotFoundException(ADMIN, "DELETE", "Admin not found for ID: " + id);
+		}
+
+		adminRepository.deleteById(id);
+		GlobalLogger.infoSuccess("Deleted", ADMIN, id);
+	}
 }
