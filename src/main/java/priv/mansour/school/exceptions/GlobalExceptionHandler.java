@@ -10,6 +10,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import priv.mansour.school.logger.GlobalLogger;
+
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -18,6 +20,7 @@ public class GlobalExceptionHandler {
 		Map<String, String> errors = new HashMap<>();
 		for (FieldError error : ex.getBindingResult().getFieldErrors()) {
 			errors.put(error.getField(), error.getDefaultMessage());
+			GlobalLogger.warnEmptyField(error.getField());
 		}
 		return ResponseEntity.badRequest().body(errors);
 	}
@@ -45,4 +48,5 @@ public class GlobalExceptionHandler {
 		response.put("message", "Erreur interne : " + ex.getMessage());
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
 	}
+
 }

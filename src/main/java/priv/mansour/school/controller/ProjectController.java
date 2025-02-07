@@ -52,7 +52,7 @@ public class ProjectController {
 
 	@PutMapping("/{id}")
 	public ResponseEntity<Project> updateProject(@PathVariable String id, @RequestBody Project updatedProject) {
-		GlobalLogger.infoUpdate(PROJECT, "Updating project ID: " + id);
+		GlobalLogger.infoUpdate(PROJECT, "Updating project ID: ", id);
 		Project updated = projectService.updateProject(id, updatedProject);
 		GlobalLogger.infoSuccess("Updated", PROJECT, "Project ID: " + updated.getId());
 		return ResponseEntity.ok(updated);

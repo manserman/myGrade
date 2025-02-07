@@ -3,6 +3,7 @@ package priv.mansour.school.services;
 import static priv.mansour.school.utils.Constants.TEACHER;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -53,7 +54,7 @@ public class TeacherService {
 		Teacher teacher = teacherRepository.findById(teacherId).orElseThrow(
 				() -> new ResourceNotFoundException(TEACHER, "ADD_PROJECT", "Teacher not found for ID: " + teacherId));
 
-		List<Project> projects = teacher.getProjets();
+		Set<Project> projects = teacher.getProjets();
 		if (!projects.contains(project)) {
 			projects.add(project);
 		}

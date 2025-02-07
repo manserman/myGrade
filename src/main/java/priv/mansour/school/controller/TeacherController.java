@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
 import priv.mansour.school.entity.Project;
 import priv.mansour.school.entity.Teacher;
 import priv.mansour.school.logger.GlobalLogger;
@@ -32,7 +33,7 @@ public class TeacherController {
 	}
 
 	@PostMapping("/new")
-	public ResponseEntity<Teacher> addTeacher(@RequestBody Teacher teacher) {
+	public ResponseEntity<Teacher> addTeacher(@Valid @RequestBody Teacher teacher) {
 		GlobalLogger.infoCreate(TEACHER, teacher);
 		return ResponseEntity.ok(teacherService.addTeacher(teacher));
 	}
