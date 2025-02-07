@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<Map<String, String>> handleValidationException(MethodArgumentNotValidException ex) {
 		Map<String, String> errors = new HashMap<>();
@@ -22,17 +23,26 @@ public class GlobalExceptionHandler {
 	}
 
 	@ExceptionHandler(ResourceNotFoundException.class)
-	public ResponseEntity<String> handleResourceNotFoundException(ResourceNotFoundException ex) {
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+	public ResponseEntity<Map<String, String>> handleResourceNotFoundException(ResourceNotFoundException ex) {
+		Map<String, String> response = new HashMap<>();
+		response.put("error", "Resource Not Found");
+		response.put("message", ex.getMessage());
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
 	}
 
 	@ExceptionHandler(DuplicateKeyException.class)
-	public ResponseEntity<String> handleDuplicateResourceException(DuplicateKeyException ex) {
-		return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+	public ResponseEntity<Map<String, String>> handleDuplicateResourceException(DuplicateKeyException ex) {
+		Map<String, String> response = new HashMap<>();
+		response.put("error", "Duplicate Key");
+		response.put("message", ex.getMessage());
+		return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
 	}
 
 	@ExceptionHandler(Exception.class)
-	public ResponseEntity<String> handleGlobalException(Exception ex) {
-		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur interne : " + ex.getMessage());
+	public ResponseEntity<Map<String, String>> handleGlobalException(Exception ex) {
+		Map<String, String> response = new HashMap<>();
+		response.put("error", "Internal Server Error");
+		response.put("message", "Erreur interne : " + ex.getMessage());
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
 	}
 }
