@@ -11,8 +11,8 @@ import lombok.Getter;
 import lombok.ToString;
 
 @Document
-@AllArgsConstructor // ✅ Required to set all final fields
-@Getter // ✅ Only getters, no setters (immutability)
+@AllArgsConstructor 
+@Getter 
 @EqualsAndHashCode
 @ToString(exclude = "id")
 public class Competence {
