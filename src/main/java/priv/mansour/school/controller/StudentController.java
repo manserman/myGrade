@@ -36,7 +36,7 @@ public class StudentController {
 		return ResponseEntity.ok(studentService.addStudent(student));
 	}
 
-	@GetMapping("/all")
+	@GetMapping
 	public ResponseEntity<List<Student>> getAllStudents() {
 		GlobalLogger.infoReadAll(STUDENT);
 		return ResponseEntity.ok(studentService.getAllStudents());

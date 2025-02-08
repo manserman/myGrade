@@ -32,7 +32,7 @@ public class ProjectController {
 		return ResponseEntity.ok(createdProject);
 	}
 
-	@GetMapping("/all")
+	@GetMapping
 	public ResponseEntity<List<Project>> getAllProjects() {
 		GlobalLogger.infoReadAll(PROJECT);
 		return ResponseEntity.ok(projectService.getAllProjects());

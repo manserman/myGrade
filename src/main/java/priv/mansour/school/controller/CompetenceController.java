@@ -38,7 +38,7 @@ public class CompetenceController {
 		return ResponseEntity.ok(createdCompetence);
 	}
 
-	@GetMapping("/getAll")
+	@GetMapping
 	public ResponseEntity<List<Competence>> getAllCompetences() {
 		GlobalLogger.infoReadAll(COMPETENCE);
 		List<Competence> competences = competenceService.getAllCompetences();

@@ -32,7 +32,7 @@ public class ProjectService {
 	public Project addProject(@Valid Project project) {
 		GlobalLogger.infoAction("Saving", PROJECT, project);
 		Project savedProject = projectRepository.save(project);
-		GlobalLogger.infoSuccess("Saved", PROJECT, savedProject);
+		GlobalLogger.infoSuccess("Saved", PROJECT, savedProject); 
 		return savedProject;
 	}
 

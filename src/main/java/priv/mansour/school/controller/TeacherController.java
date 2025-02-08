@@ -38,7 +38,7 @@ public class TeacherController {
 		return ResponseEntity.ok(teacherService.addTeacher(teacher));
 	}
 
-	@GetMapping("/all")
+	@GetMapping
 	public ResponseEntity<List<Teacher>> getAllTeachers() {
 		GlobalLogger.infoReadAll(TEACHER);
 		return ResponseEntity.ok(teacherService.getAllTeachers());
