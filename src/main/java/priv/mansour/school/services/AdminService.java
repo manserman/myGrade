@@ -42,13 +42,13 @@ public class AdminService {
 	public Admin getAdminById(@NotBlank String id) {
 		GlobalLogger.infoAction("Fetching", ADMIN, "ID: " + id);
 		return adminRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException(ADMIN, "READ", "Admin not found for ID: " + id));
+				.orElseThrow(() -> new ResourceNotFoundException("READ", ADMIN,    id));
 	}
 
 	public Admin updateAdmin(@NotBlank String id, @Valid Admin updatedAdmin) {
 		GlobalLogger.infoAction("Updating", ADMIN, "ID: " + id);
 		Admin admin = adminRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException(ADMIN, "UPDATE", "Admin not found for ID: " + id));
+				.orElseThrow(() -> new ResourceNotFoundException("UPDATE",ADMIN,  id));
 
 		admin.setNom(updatedAdmin.getNom());
 		admin.setPrenom(updatedAdmin.getPrenom());
