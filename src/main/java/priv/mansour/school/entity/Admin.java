@@ -7,8 +7,8 @@ import priv.mansour.school.enums.Role;
 @Document
 public class Admin extends User {
 
-	public Admin(String nom, String prenom) {
-		super(nom, prenom, Role.ADMIN);
+	public Admin(String nom, String prenom,String mail) {
+		super(nom, prenom, Role.ADMIN,mail);
 
 	}
 

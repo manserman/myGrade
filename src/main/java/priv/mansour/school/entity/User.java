@@ -35,10 +35,11 @@ public abstract class User {
 	@Field("role")
 	private Role role;
 
-	public User(String nom, String prenom, Role role) {
+	public User(String nom, String prenom, Role role, String mail) {
 		this.nom = nom;
 		this.prenom = prenom;
 		this.role = role;
+		this.mail = mail;
 	}
 
 }

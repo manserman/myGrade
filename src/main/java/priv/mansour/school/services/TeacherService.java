@@ -3,7 +3,6 @@ package priv.mansour.school.services;
 import static priv.mansour.school.utils.Constants.TEACHER;
 
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,7 +10,6 @@ import org.springframework.validation.annotation.Validated;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-import priv.mansour.school.entity.Project;
 import priv.mansour.school.entity.Teacher;
 import priv.mansour.school.exceptions.ResourceNotFoundException;
 import priv.mansour.school.logger.GlobalLogger;
@@ -46,37 +44,6 @@ public class TeacherService {
 		GlobalLogger.infoAction("Fetching", TEACHER, "ID: " + id);
 		return teacherRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException(TEACHER, "READ", "Teacher not found for ID: " + id));
-	}
-
-	public Teacher addProjectToTeacher(@NotBlank String teacherId, @Valid Project project) {
-		GlobalLogger.infoAction("Adding Project", TEACHER, "Teacher ID: " + teacherId + " Project: " + project);
-
-		Teacher teacher = teacherRepository.findById(teacherId).orElseThrow(
-				() -> new ResourceNotFoundException(TEACHER, "ADD_PROJECT", "Teacher not found for ID: " + teacherId));
-
-		Set<Project> projects = teacher.getProjets();
-		if (!projects.contains(project)) {
-			projects.add(project);
-		}
-
-		Teacher updatedTeacher = teacherRepository.save(teacher);
-		GlobalLogger.infoSuccess("Added Project", TEACHER, "Teacher ID: " + teacherId + " Project: " + project);
-		return updatedTeacher;
-	}
-
-	public Teacher updateTeacher(@NotBlank String id, @Valid Teacher updatedTeacher) {
-		GlobalLogger.infoAction("Updating", TEACHER, "ID: " + id);
-
-		Teacher teacher = teacherRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException(TEACHER, "UPDATE", "Teacher not found for ID: " + id));
-
-		teacher.setNom(updatedTeacher.getNom());
-		teacher.setPrenom(updatedTeacher.getPrenom());
-		teacher.setProjets(updatedTeacher.getProjets());
-
-		Teacher updated = teacherRepository.save(teacher);
-		GlobalLogger.infoSuccess("Updated", TEACHER, id);
-		return updated;
 	}
 
 	public void deleteTeacherById(@NotBlank String id) {
