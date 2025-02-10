@@ -11,8 +11,8 @@ import priv.mansour.school.enums.Role;
 @Setter
 public class Teacher extends User {
 
-	public Teacher(String nom, String prenom) {
-		super(nom, prenom, Role.TEACHER);
+	public Teacher(String nom, String prenom,String email) {
+		super(nom, prenom, Role.TEACHER,email);
 	}
 
 }

@@ -16,8 +16,8 @@ public class Student extends User {
 	@DBRef
 	private Set<Project> projets = new HashSet<>();
 
-	public Student(String nom, String prenom) {
-		super(nom, prenom, Role.STUDENT);
+	public Student(String nom, String prenom, String email) {
+		super(nom, prenom, Role.STUDENT, email);
 
 	}
 
