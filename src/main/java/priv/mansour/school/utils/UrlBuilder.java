@@ -2,20 +2,21 @@ package priv.mansour.school.utils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import jakarta.servlet.http.HttpServletRequest;
 
 @Component
-public class URLBuilder {
+public class UrlBuilder {
+	private final HttpServletRequest request;
+	private final String defaultRegion = "default-region";
+
 	@Autowired
-	private HttpServletRequest request;
+	public UrlBuilder(HttpServletRequest request) {
+		this.request = request;
+	}
 
 	public String getRegion() {
 		String host = request.getServerName();
-		if (host.contains(".")) {
-			return host.split("\\.")[0];
-		}
-		return "fr";
+		return host.contains(".") ? host.split("\\.")[0] : defaultRegion;
 	}
 
 	public Builder newBuilder() {
@@ -66,6 +67,10 @@ public class URLBuilder {
 
 			String hostname = format.replace("{service}", serviceName).replace("{region}", region).replace("{domain}",
 					domain);
+
+			if (hostname.contains("{")) {
+				throw new IllegalStateException("Format invalide, des placeholders ne sont pas remplacés.");
+			}
 
 			StringBuilder url = new StringBuilder();
 			if (protocol != null) {
