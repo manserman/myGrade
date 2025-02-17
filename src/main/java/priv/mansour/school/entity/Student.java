@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import priv.mansour.school.enums.ResultatEnum;
 import priv.mansour.school.enums.Role;
 
+@SuppressWarnings("serial")
 @Document
 public class Student extends User {
 
@@ -16,8 +17,8 @@ public class Student extends User {
 	@DBRef
 	private Set<Project> projets = new HashSet<>();
 
-	public Student(String nom, String prenom, String email) {
-		super(nom, prenom, Role.STUDENT, email);
+	public Student(String nom, String prenom, String email, String password) {
+		super(nom, prenom, Role.STUDENT, email, password);
 
 	}
 

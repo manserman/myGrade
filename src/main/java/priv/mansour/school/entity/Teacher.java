@@ -6,13 +6,14 @@ import lombok.Getter;
 import lombok.Setter;
 import priv.mansour.school.enums.Role;
 
+@SuppressWarnings("serial")
 @Document
 @Getter
 @Setter
 public class Teacher extends User {
 
-	public Teacher(String nom, String prenom,String email) {
-		super(nom, prenom, Role.TEACHER,email);
+	public Teacher(String nom, String prenom, String email, String password) {
+		super(nom, prenom, Role.TEACHER, email, password);
 	}
 
 }
