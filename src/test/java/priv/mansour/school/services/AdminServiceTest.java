@@ -33,8 +33,8 @@ public class AdminServiceTest {
 
 	@BeforeEach
 	public void setUp() {
-		admin1 = new Admin("Admin1", "Num1", "admin1@gmail.com");
-		admin2 = new Admin("Admin2", "Num2", "admin2@gmail.com");
+		admin1 = new Admin("Admin1", "Num1", "admin1@gmail.com", "password1");
+		admin2 = new Admin("Admin2", "Num2", "admin2@gmail.com", "password2");
 	}
 
 	@Test

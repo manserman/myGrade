@@ -37,8 +37,8 @@ public class TeacherServiceTest {
 
 	@BeforeEach
 	public void setUp() {
-		teacher1 = new Teacher("John", "Doe", "john.doe@example.com");
-		teacher2 = new Teacher("Jane", "Smith", "jane.smith@example.com");
+		teacher1 = new Teacher("John", "Doe", "john.doe@example.com", "Password1");
+		teacher2 = new Teacher("Jane", "Smith", "jane.smith@example.com", "Password1");
 	}
 
 	@Test
