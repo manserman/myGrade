@@ -43,15 +43,16 @@ class AdminControllerTest {
 	private AdminController adminController;
 
 	private ObjectMapper objectMapper = new ObjectMapper();
+	Admin admin;
 
 	@BeforeEach
 	void setUp() {
 		mockMvc = MockMvcBuilders.standaloneSetup(adminController).build();
+		admin= new Admin("John", "Doe Updated", "john.updated@example.com", "password");
 	}
 
 	@Test
 	void testAddAdmin() throws Exception {
-		Admin admin = new Admin("John", "Doe", "john.doe@example.com");
 		when(adminService.addAdmin(any(Admin.class))).thenReturn(admin);
 
 		mockMvc.perform(post("/admins/new").contentType(MediaType.APPLICATION_JSON)
@@ -61,8 +62,8 @@ class AdminControllerTest {
 
 	@Test
 	void testGetAllAdmins() throws Exception {
-		List<Admin> admins = Arrays.asList(new Admin("1", "John Doe", "john.doe@example.com"),
-				new Admin("2", "Jane Doe", "jane.doe@example.com"));
+		List<Admin> admins = Arrays.asList(admin,
+				new Admin("2", "Jane Doe", "jane.doe@example.com","password"));
 		when(adminService.getAllAdmins()).thenReturn(admins);
 
 		mockMvc.perform(get("/admins")).andExpect(status().isOk()).andExpect(jsonPath("$[0].id").value("1"))
@@ -71,7 +72,7 @@ class AdminControllerTest {
 
 	@Test
 	void testGetAdminById() throws Exception {
-		Admin admin = new Admin("1", "John Doe", "john.doe@example.com");
+		
 		when(adminService.getAdminById("1")).thenReturn(admin);
 
 		mockMvc.perform(get("/admins/1")).andExpect(status().isOk()).andExpect(jsonPath("$.id").value("1"))
@@ -87,7 +88,7 @@ class AdminControllerTest {
 
 	@Test
 	void testUpdateAdmin() throws Exception {
-		Admin updatedAdmin = new Admin("John", "Doe Updated", "john.updated@example.com");
+		Admin updatedAdmin = admin;
 		when(adminService.updateAdmin(eq("1"), any(Admin.class))).thenReturn(updatedAdmin);
 
 		mockMvc.perform(put("/admins/1").contentType(MediaType.APPLICATION_JSON)
