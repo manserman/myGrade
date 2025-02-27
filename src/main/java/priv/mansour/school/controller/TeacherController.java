@@ -17,35 +17,35 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 import priv.mansour.school.entity.Teacher;
 import priv.mansour.school.logger.GlobalLogger;
-import priv.mansour.school.services.TeacherService;
+import priv.mansour.school.services.IUserService;
 
 @RestController
 @RequestMapping("/teachers")
 public class TeacherController {
 
-	private final TeacherService teacherService;
+	private final IUserService<Teacher> teacherService;
 
 	@Autowired
-	public TeacherController(TeacherService teacherService) {
+	public TeacherController(IUserService<Teacher> teacherService) {
 		this.teacherService = teacherService;
 	}
 
 	@PostMapping("/new")
 	public ResponseEntity<Teacher> addTeacher(@Valid @RequestBody Teacher teacher) {
 		GlobalLogger.infoCreate(TEACHER, teacher);
-		return ResponseEntity.ok(teacherService.addTeacher(teacher));
+		return ResponseEntity.ok(teacherService.add(teacher));
 	}
 
 	@GetMapping
 	public ResponseEntity<List<Teacher>> getAllTeachers() {
 		GlobalLogger.infoReadAll(TEACHER);
-		return ResponseEntity.ok(teacherService.getAllTeachers());
+		return ResponseEntity.ok(teacherService.getAll());
 	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<Teacher> getTeacherById(@PathVariable String id) {
 		GlobalLogger.infoRead(TEACHER, id);
-		return ResponseEntity.ok(teacherService.getTeacherById(id));
+		return ResponseEntity.ok(teacherService.getById(id));
 	}
 
 	
@@ -55,7 +55,7 @@ public class TeacherController {
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deleteTeacherById(@PathVariable String id) {
 		GlobalLogger.infoDelete(TEACHER, id);
-		teacherService.deleteTeacherById(id);
+		teacherService.deleteById(id);
 		return ResponseEntity.noContent().build();
 	}
 }

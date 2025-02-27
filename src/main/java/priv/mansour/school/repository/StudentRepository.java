@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import priv.mansour.school.entity.Student;
 
 @Repository
-public interface StudentRepository extends MongoRepository<Student, String> {
-	Optional<Student> findByMail(String mail);
+public interface StudentRepository extends MongoRepository<Student, String>, IFindByEmail<Student> {
+
 
 }

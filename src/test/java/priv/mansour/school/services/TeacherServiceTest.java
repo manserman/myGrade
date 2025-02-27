@@ -30,7 +30,7 @@ public class TeacherServiceTest {
 	TeacherRepository teacherRepository;
 
 	@InjectMocks
-	TeacherService teacherService;
+	IUserService<Teacher> teacherService;
 
 	Teacher teacher1;
 	Teacher teacher2;
@@ -44,7 +44,7 @@ public class TeacherServiceTest {
 	@Test
 	public void testAddTeacher_Success() {
 		when(teacherRepository.save(any(Teacher.class))).thenReturn(teacher1);
-		Teacher savedTeacher = teacherService.addTeacher(teacher1);
+		Teacher savedTeacher = teacherService.add(teacher1);
 		assertEquals("John", savedTeacher.getNom());
 		verify(teacherRepository, times(1)).save(teacher1);
 	}
@@ -52,7 +52,7 @@ public class TeacherServiceTest {
 	@Test
 	public void testGetAllTeachers_Success() {
 		when(teacherRepository.findAll()).thenReturn(Arrays.asList(teacher1, teacher2));
-		List<Teacher> teachers = teacherService.getAllTeachers();
+		List<Teacher> teachers = teacherService.getAll();
 		assertEquals(2, teachers.size());
 		verify(teacherRepository, times(1)).findAll();
 	}
@@ -60,7 +60,7 @@ public class TeacherServiceTest {
 	@Test
 	public void testGetTeacherById_Success() {
 		when(teacherRepository.findById("1")).thenReturn(Optional.of(teacher1));
-		Teacher foundTeacher = teacherService.getTeacherById("1");
+		Teacher foundTeacher = teacherService.getById("1");
 		assertEquals("John", foundTeacher.getNom());
 		verify(teacherRepository, times(1)).findById("1");
 	}
@@ -68,7 +68,7 @@ public class TeacherServiceTest {
 	@Test
 	public void testGetTeacherById_Fail() {
 		when(teacherRepository.findById("1")).thenReturn(Optional.empty());
-		assertThrows(ResourceNotFoundException.class, () -> teacherService.getTeacherById("1"));
+		assertThrows(ResourceNotFoundException.class, () -> teacherService.getById("1"));
 		verify(teacherRepository, times(1)).findById("1");
 	}
 
@@ -76,14 +76,14 @@ public class TeacherServiceTest {
 	public void testDeleteTeacherById_Success() {
 		when(teacherRepository.existsById("1")).thenReturn(true);
 		doNothing().when(teacherRepository).deleteById("1");
-		teacherService.deleteTeacherById("1");
+		teacherService.deleteById("1");
 		verify(teacherRepository, times(1)).deleteById("1");
 	}
 
 	@Test
 	public void testDeleteTeacherById_Fail() {
 		when(teacherRepository.existsById("1")).thenReturn(false);
-		assertThrows(ResourceNotFoundException.class, () -> teacherService.deleteTeacherById("1"));
+		assertThrows(ResourceNotFoundException.class, () -> teacherService.deleteById("1"));
 		verify(teacherRepository, times(0)).deleteById("1");
 	}
 }

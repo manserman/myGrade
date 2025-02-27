@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 import priv.mansour.school.entity.Teacher;
 
 @Repository
-public interface TeacherRepository extends MongoRepository<Teacher, String> {
-	Optional<Teacher> findByMail(String mail);
+public interface TeacherRepository extends MongoRepository<Teacher, String>, IFindByEmail<Teacher> {
+
 }

@@ -20,45 +20,47 @@ import priv.mansour.school.repository.ProjectRepository;
 
 @Validated
 @Service
-public class ProjectService {
+public class ProjectServiceImpl implements IProjectService {
 
 	private final ProjectRepository projectRepository;
 
 	@Autowired
-	public ProjectService(ProjectRepository projectRepository) {
+	public ProjectServiceImpl(ProjectRepository projectRepository) {
 		this.projectRepository = projectRepository;
 	}
 
-	public Project addProject(@Valid Project project) {
+	@Override
+	public Project add(@Valid Project project) {
 		GlobalLogger.infoAction("Saving", PROJECT, project);
 		Project savedProject = projectRepository.save(project);
 		GlobalLogger.infoSuccess("Saved", PROJECT, savedProject); 
 		return savedProject;
 	}
 
-	public List<Project> getAllProjects() {
+	@Override
+	public List<Project> getAll() {
 		GlobalLogger.infoAction("Fetching all", PROJECT, "Retrieving all projects from database");
 		List<Project> projects = projectRepository.findAll();
 		GlobalLogger.infoSuccess("Fetched all", PROJECT, projects.size() + " projects found");
 		return projects;
 	}
-
-	public Project getProjectById(@NotBlank String id) {
+	@Override
+	public Project getById(@NotBlank String id) {
 		GlobalLogger.infoAction("Fetching", PROJECT, "ID: " + id);
 		return projectRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException(PROJECT, "READ", "Project not found for ID: " + id));
 	}
-
-	public Project getProjectByLibelle(@NotBlank String libelle) {
+	@Override
+	public Project findByLibelle(@NotBlank String libelle) {
 		GlobalLogger.infoAction("Fetching", PROJECT, "Libelle: " + libelle);
 		return projectRepository.findByLibelle(libelle).orElseThrow(
 				() -> new ResourceNotFoundException(PROJECT, "READ", "Project not found for libelle: " + libelle));
 	}
-
-	public Project updateProject(@NotBlank String id, @Valid Project updatedProject) {
+	@Override
+	public Project update(@NotBlank String id, @Valid Project updatedProject) {
 		GlobalLogger.infoAction("Updating", PROJECT, "ID: " + id);
 
-		Project project = getProjectById(id);
+		Project project = getById(id);
 
 		project.setCompetences(updatedProject.getCompetences());
 
@@ -66,8 +68,8 @@ public class ProjectService {
 		GlobalLogger.infoSuccess("Updated", PROJECT, id);
 		return updated;
 	}
-
-	public void deleteProjectById(@NotBlank String id) {
+	@Override
+	public void deleteById(@NotBlank String id) {
 		GlobalLogger.infoAction("Deleting", PROJECT, "ID: " + id);
 
 		if (!projectRepository.existsById(id)) {
@@ -82,7 +84,7 @@ public class ProjectService {
 		GlobalLogger.infoAction("Adding Competence", PROJECT,
 				"Project ID: " + projectId + " Competence: " + competence.getLibelle());
 
-		Project project = getProjectById(projectId);
+		Project project = getById(projectId);
 
 		if (project.getCompetences() == null) {
 			project.setCompetences(new ArrayList<>());
@@ -106,10 +108,10 @@ public class ProjectService {
 		return updatedProject;
 	}
 
-	public List<Competence> getCompetences(@NotBlank String projectId) {
+	public List<Competence> getAllCompetences(@NotBlank String projectId) {
 		GlobalLogger.infoAction("Fetching Competences", PROJECT, "Project ID: " + projectId);
 
-		Project project = getProjectById(projectId);
+		Project project = getById(projectId);
 
 		List<Competence> competences = project.getCompetences();
 

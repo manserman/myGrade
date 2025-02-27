@@ -17,36 +17,41 @@ import priv.mansour.school.repository.TeacherRepository;
 
 @Service
 @Validated
-public class TeacherService {
+public class TeacherServiceImpl implements IUserService<Teacher>{
 
 	private final TeacherRepository teacherRepository;
 
 	@Autowired
-	public TeacherService(TeacherRepository teacherRepository) {
+	public TeacherServiceImpl(TeacherRepository teacherRepository) {
 		this.teacherRepository = teacherRepository;
 	}
 
-	public Teacher addTeacher(@Valid Teacher teacher) {
+	public Teacher add(@Valid Teacher teacher) {
 		GlobalLogger.infoAction("Saving", TEACHER, teacher);
 		Teacher savedTeacher = teacherRepository.save(teacher);
 		GlobalLogger.infoSuccess("Saved", TEACHER, savedTeacher);
 		return savedTeacher;
 	}
 
-	public List<Teacher> getAllTeachers() {
+	public List<Teacher> getAll() {
 		GlobalLogger.infoAction("Fetching all", TEACHER, "Retrieving all teachers from database");
 		List<Teacher> teachers = teacherRepository.findAll();
 		GlobalLogger.infoSuccess("Fetched all", TEACHER, teachers.size() + " teachers found");
 		return teachers;
 	}
 
-	public Teacher getTeacherById(@NotBlank String id) {
+	public Teacher getById(@NotBlank String id) {
 		GlobalLogger.infoAction("Fetching", TEACHER, "ID: " + id);
 		return teacherRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException(TEACHER, "READ", "Teacher not found for ID: " + id));
 	}
 
-	public void deleteTeacherById(@NotBlank String id) {
+	@Override
+	public Teacher update(String s, Teacher updatedEntity) {
+		return null;
+	}
+
+	public void deleteById(@NotBlank String id) {
 		GlobalLogger.infoAction("Deleting", TEACHER, "ID: " + id);
 
 		if (!teacherRepository.existsById(id)) {
@@ -55,5 +60,10 @@ public class TeacherService {
 
 		teacherRepository.deleteById(id);
 		GlobalLogger.infoSuccess("Deleted", TEACHER, id);
+	}
+
+	@Override
+	public Teacher findByEmail(String mail) {
+		return null;
 	}
 }

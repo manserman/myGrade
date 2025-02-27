@@ -42,7 +42,7 @@ class AdminControllerTest {
 	@InjectMocks
 	private AdminController adminController;
 
-	private ObjectMapper objectMapper = new ObjectMapper();
+	private final ObjectMapper objectMapper = new ObjectMapper();
 	Admin admin;
 
 	@BeforeEach
@@ -53,7 +53,7 @@ class AdminControllerTest {
 
 	@Test
 	void testAddAdmin() throws Exception {
-		when(adminService.addAdmin(any(Admin.class))).thenReturn(admin);
+		when(adminService.add(any(Admin.class))).thenReturn(admin);
 
 		mockMvc.perform(post("/admins/new").contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(admin))).andExpect(status().isCreated())
@@ -64,7 +64,7 @@ class AdminControllerTest {
 	void testGetAllAdmins() throws Exception {
 		List<Admin> admins = Arrays.asList(admin,
 				new Admin("2", "Jane Doe", "jane.doe@example.com","password"));
-		when(adminService.getAllAdmins()).thenReturn(admins);
+		when(adminService.getAll()).thenReturn(admins);
 
 		mockMvc.perform(get("/admins")).andExpect(status().isOk()).andExpect(jsonPath("$[0].id").value("1"))
 				.andExpect(jsonPath("$[1].id").value("2"));
@@ -73,7 +73,7 @@ class AdminControllerTest {
 	@Test
 	void testGetAdminById() throws Exception {
 		
-		when(adminService.getAdminById("1")).thenReturn(admin);
+		when(adminService.getById("1")).thenReturn(admin);
 
 		mockMvc.perform(get("/admins/1")).andExpect(status().isOk()).andExpect(jsonPath("$.id").value("1"))
 				.andExpect(jsonPath("$.name").value("John Doe"));
@@ -81,7 +81,7 @@ class AdminControllerTest {
 
 	@Test
 	void testGetAdminById_NotFound() throws Exception {
-		when(adminService.getAdminById("99")).thenThrow(new ResourceNotFoundException("READ", "ADMIN", "99"));
+		when(adminService.getById("99")).thenThrow(new ResourceNotFoundException("READ", "ADMIN", "99"));
 
 		mockMvc.perform(get("/admins/99")).andExpect(status().isNotFound());
 	}
@@ -89,7 +89,7 @@ class AdminControllerTest {
 	@Test
 	void testUpdateAdmin() throws Exception {
 		Admin updatedAdmin = admin;
-		when(adminService.updateAdmin(eq("1"), any(Admin.class))).thenReturn(updatedAdmin);
+		when(adminService.update(eq("1"), any(Admin.class))).thenReturn(updatedAdmin);
 
 		mockMvc.perform(put("/admins/1").contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(updatedAdmin))).andExpect(status().isOk())
@@ -101,14 +101,14 @@ class AdminControllerTest {
 
 	@Test
 	void testDeleteAdminById() throws Exception {
-		doNothing().when(adminService).deleteAdminById("1");
+		doNothing().when(adminService).deleteById("1");
 
 		mockMvc.perform(delete("/admins/1")).andExpect(status().isNoContent());
 	}
 
 	@Test
 	void testDeleteAdminById_NotFound() throws Exception {
-		doThrow(new ResourceNotFoundException("DELETE", "ADMIN", "99")).when(adminService).deleteAdminById("99");
+		doThrow(new ResourceNotFoundException("DELETE", "ADMIN", "99")).when(adminService).deleteById("99");
 
 		mockMvc.perform(delete("/admins/99")).andExpect(status().isNotFound());
 	}

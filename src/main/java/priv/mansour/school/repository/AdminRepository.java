@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import priv.mansour.school.entity.Admin;
 
 @Repository
-public interface AdminRepository extends MongoRepository<Admin, String> {
-	Optional<Admin> findByMail(String mail);
+public interface AdminRepository extends MongoRepository<Admin, String>, IFindByEmail<Admin> {
+
 
 }

@@ -29,13 +29,13 @@ import priv.mansour.school.exceptions.ResourceNotFoundException;
 import priv.mansour.school.repository.ProjectRepository;
 
 @ExtendWith(MockitoExtension.class)
-public class ProjectServiceTest {
+public class ProjectServiceImplTest {
 
 	@Mock
 	ProjectRepository projectRepository;
 
 	@InjectMocks
-	ProjectService projectService;
+	ProjectServiceImpl projectServiceImpl;
 
 	Project project1;
 	Project project2;
@@ -57,31 +57,31 @@ public class ProjectServiceTest {
 	@Test
 	public void testAddProject_Success() {
 		when(projectRepository.save(any(Project.class))).thenReturn(project1);
-		Project savedProject = projectService.addProject(project1);
+		Project savedProject = projectServiceImpl.add(project1);
 		assertEquals("Project1", savedProject.getLibelle());
 		verify(projectRepository, times(1)).save(project1);
 	}
 
 	@Test
-	public void testGetAllProjects_Success() {
+	public void testGetAll_Success() {
 		when(projectRepository.findAll()).thenReturn(Arrays.asList(project1, project2));
-		List<Project> projects = projectService.getAllProjects();
+		List<Project> projects = projectServiceImpl.getAll();
 		assertEquals(2, projects.size());
 		verify(projectRepository, times(1)).findAll();
 	}
 
 	@Test
-	public void testGetProjectById_Success() {
+	public void testGetById_Success() {
 		when(projectRepository.findById("1")).thenReturn(Optional.of(project1));
-		Project foundProject = projectService.getProjectById("1");
+		Project foundProject = projectServiceImpl.getById("1");
 		assertEquals("Project1", foundProject.getLibelle());
 		verify(projectRepository, times(1)).findById("1");
 	}
 
 	@Test
-	public void testGetProjectById_Fail() {
+	public void testGetById_Fail() {
 		when(projectRepository.findById("1")).thenReturn(Optional.empty());
-		assertThrows(ResourceNotFoundException.class, () -> projectService.getProjectById("1"));
+		assertThrows(ResourceNotFoundException.class, () -> projectServiceImpl.getById("1"));
 		verify(projectRepository, times(1)).findById("1");
 	}
 
@@ -89,7 +89,7 @@ public class ProjectServiceTest {
 	public void testUpdateProject_Success() {
 		when(projectRepository.findById("1")).thenReturn(Optional.of(project1));
 		when(projectRepository.save(any(Project.class))).thenReturn(project1);
-		Project updatedProject = projectService.updateProject("1", project1);
+		Project updatedProject = projectServiceImpl.update("1", project1);
 		assertEquals("Project1", updatedProject.getLibelle());
 		verify(projectRepository, times(1)).save(project1);
 		verify(projectRepository, times(1)).findById("1");
@@ -99,14 +99,14 @@ public class ProjectServiceTest {
 	public void testDeleteProjectById_Success() {
 		when(projectRepository.existsById("1")).thenReturn(true);
 		doNothing().when(projectRepository).deleteById("1");
-		projectService.deleteProjectById("1");
+		projectServiceImpl.deleteById("1");
 		verify(projectRepository, times(1)).deleteById("1");
 	}
 
 	@Test
 	public void testDeleteProjectById_Fail() {
 		when(projectRepository.existsById("1")).thenReturn(false);
-		assertThrows(ResourceNotFoundException.class, () -> projectService.deleteProjectById("1"));
+		assertThrows(ResourceNotFoundException.class, () -> projectServiceImpl.deleteById("1"));
 		verify(projectRepository, times(0)).deleteById("1");
 	}
 
@@ -114,7 +114,7 @@ public class ProjectServiceTest {
 	public void testAddCompetenceToProject_Success() {
 		when(projectRepository.findById("2")).thenReturn(Optional.of(project2));
 		when(projectRepository.save(any(Project.class))).thenReturn(project2);
-		Project updatedProject = projectService.addCompetenceToProject("2", competence2);
+		Project updatedProject = projectServiceImpl.addCompetenceToProject("2", competence2);
 		assertTrue(updatedProject.getCompetences().contains(competence2));
 		verify(projectRepository, times(1)).save(project2);
 	}
@@ -123,6 +123,6 @@ public class ProjectServiceTest {
 	public void testAddCompetenceToProject_Duplicate() {
 		project1.setCompetences(Arrays.asList(competence1));
 		when(projectRepository.findById("1")).thenReturn(Optional.of(project1));
-		assertThrows(DuplicateKeyException.class, () -> projectService.addCompetenceToProject("1", competence1));
+		assertThrows(DuplicateKeyException.class, () -> projectServiceImpl.addCompetenceToProject("1", competence1));
 	}
 }
