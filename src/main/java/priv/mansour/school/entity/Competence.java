@@ -24,7 +24,7 @@ public class Competence {
 	private final String description;
 
 	@Indexed(unique = true)
-	@NotBlank(message = "Veuillez fournir un libellé pour le projet.")
+	@NotBlank(message = "Veuillez fournir un libelle pour le projet.")
 	private final String libelle;
 
 }

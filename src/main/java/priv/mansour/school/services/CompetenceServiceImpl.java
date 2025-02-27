@@ -4,6 +4,8 @@ import static priv.mansour.school.utils.Constants.COMPETENCE;
 
 import java.util.List;
 
+import com.mongodb.DuplicateKeyException;
+import org.apache.kafka.common.errors.DuplicateResourceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import priv.mansour.school.entity.Competence;
@@ -25,9 +27,14 @@ public class CompetenceServiceImpl implements ICompetenceService {
     @Override
     public Competence add( Competence competence) {
         GlobalLogger.infoAction("Saving", COMPETENCE, competence);
+        try{
         Competence savedCompetence = competenceRepository.save(competence);
         GlobalLogger.infoSuccess("Saved", COMPETENCE, savedCompetence);
-        return savedCompetence;
+        return savedCompetence; }
+        catch (DuplicateKeyException e){
+            throw new DuplicateResourceException("Competence with libelle '" + competence.getLibelle() + "' already exists.");
+        }
+
     }
 
     @Override

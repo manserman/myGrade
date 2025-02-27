@@ -1,5 +1,7 @@
 package priv.mansour.school.controller;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
@@ -15,6 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.Arrays;
 import java.util.List;
 
+import io.jsonwebtoken.lang.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,10 +32,13 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.springframework.test.web.servlet.MvcResult;
 import priv.mansour.school.entity.Admin;
 import priv.mansour.school.exceptions.GlobalExceptionHandler;
 import priv.mansour.school.exceptions.ResourceNotFoundException;
 import priv.mansour.school.services.AdminServiceImpl;
+import priv.mansour.school.services.IAdminService;
+
 @AutoConfigureMockMvc(addFilters = false)
 @WebMvcTest(AdminController.class)
 @ExtendWith(MockitoExtension.class)
@@ -56,12 +62,14 @@ class AdminControllerTest {
 	void testAddAdmin() throws Exception {
 		when(adminService.add(any(Admin.class))).thenReturn(admin);
 
-		mockMvc.perform(post("/admins/new")
+		MvcResult result = mockMvc.perform(post("/admins/new")
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(objectMapper.writeValueAsString(admin)))
 				.andExpect(status().isCreated())
 				.andExpect(jsonPath("$.nom").value("John"))
-				.andExpect(jsonPath("$.prenom").value("Doe"));
+				.andExpect(jsonPath("$.prenom").value("Doe"))
+				.andReturn();
+		assertEquals(objectMapper.writeValueAsString(admin),result.getResponse().getContentAsString());
 	}
 
 	@Test
