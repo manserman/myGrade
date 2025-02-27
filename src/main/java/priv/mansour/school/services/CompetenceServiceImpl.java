@@ -6,28 +6,24 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
-
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import priv.mansour.school.entity.Competence;
 import priv.mansour.school.exceptions.ResourceNotFoundException;
 import priv.mansour.school.logger.GlobalLogger;
 import priv.mansour.school.repository.CompetenceRepository;
 
 @Service
-@Validated
-public class CompetenceService implements ICompetenceService {
+
+public class CompetenceServiceImpl implements ICompetenceService {
 
     private final CompetenceRepository competenceRepository;
 
     @Autowired
-    public CompetenceService(CompetenceRepository competenceRepository) {
+    public CompetenceServiceImpl(CompetenceRepository competenceRepository) {
         this.competenceRepository = competenceRepository;
     }
 
     @Override
-    public Competence add(@Valid Competence competence) {
+    public Competence add( Competence competence) {
         GlobalLogger.infoAction("Saving", COMPETENCE, competence);
         Competence savedCompetence = competenceRepository.save(competence);
         GlobalLogger.infoSuccess("Saved", COMPETENCE, savedCompetence);
@@ -43,21 +39,21 @@ public class CompetenceService implements ICompetenceService {
     }
 
     @Override
-    public Competence getById(@NotBlank String id) {
+    public Competence getById( String id) {
         GlobalLogger.infoAction("Fetching", COMPETENCE, "ID: " + id);
         return competenceRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException(COMPETENCE, "READ", "Competence not found for ID: " + id));
     }
 
     @Override
-    public Competence getCompetenceByLibelle(@NotBlank String libelle) {
+    public Competence getCompetenceByLibelle( String libelle) {
         GlobalLogger.infoAction("Fetching", COMPETENCE, "Libelle: " + libelle);
         return competenceRepository.findByLibelle(libelle).orElseThrow(() -> new ResourceNotFoundException(COMPETENCE,
                 "READ", "Competence not found for libelle: " + libelle));
     }
 
     @Override
-    public Competence update(@NotBlank String id, @Valid Competence updatedCompetence) {
+    public Competence update( String id, Competence updatedCompetence) {
         GlobalLogger.infoAction("Updating", COMPETENCE, "ID: " + id);
 
         Competence competence = getById(id);
@@ -67,7 +63,7 @@ public class CompetenceService implements ICompetenceService {
     }
 
     @Override
-    public void deleteById(@NotBlank String id) {
+    public void deleteById( String id) {
         GlobalLogger.infoAction("Deleting", COMPETENCE, "ID: " + id);
 
         if (!competenceRepository.existsById(id)) {

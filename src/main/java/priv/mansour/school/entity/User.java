@@ -5,9 +5,7 @@ import java.util.List;
 
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Field;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+
 
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.Email;
@@ -22,7 +20,7 @@ import priv.mansour.school.enums.Role;
 @Setter
 @Getter
 @NoArgsConstructor
-public abstract class User implements UserDetails {
+public abstract class User {
 
 	@Id
 	private String id;
@@ -49,21 +47,6 @@ public abstract class User implements UserDetails {
 		this.role = role;
 		this.mail = mail;
 		this.password=password;
-	}
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		
-		return List.of(new SimpleGrantedAuthority(role.name()));
-	}
-
-	@Override
-	public String getPassword() {
-		return password;
-	}
-
-	@Override
-	public String getUsername() {
-		return mail;
 	}
 
 

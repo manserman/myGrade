@@ -30,7 +30,7 @@ public class TeacherServiceTest {
 	TeacherRepository teacherRepository;
 
 	@InjectMocks
-	IUserService<Teacher> teacherService;
+	TeacherServiceImpl teacherService;
 
 	Teacher teacher1;
 	Teacher teacher2;

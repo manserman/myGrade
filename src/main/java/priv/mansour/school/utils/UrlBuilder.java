@@ -4,12 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import jakarta.servlet.http.HttpServletRequest;
 
-@Component
+
 public class UrlBuilder {
 	private final HttpServletRequest request;
 	private final String defaultRegion = "default-region";
 
-	@Autowired
+
 	public UrlBuilder(HttpServletRequest request) {
 		this.request = request;
 	}
