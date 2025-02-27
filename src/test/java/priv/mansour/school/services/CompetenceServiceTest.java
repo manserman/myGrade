@@ -39,7 +39,7 @@ public class CompetenceServiceTest {
 	void testAddCompetence() {
 		when(competenceRepository.save(any(Competence.class))).thenReturn(competence1);
 
-		Competence savedCompetence = competenceService.addCompetence(competence1);
+		Competence savedCompetence = competenceService.add(competence1);
 
 		assertNotNull(savedCompetence);
 		assertEquals("1", savedCompetence.getId());
@@ -49,20 +49,20 @@ public class CompetenceServiceTest {
 	}
 
 	@Test
-	void testGetAllCompetences() {
+	void testGetAll() {
 		when(competenceRepository.findAll()).thenReturn(Arrays.asList(competence1, competence2));
 
-		List<Competence> competences = competenceService.getAllCompetences();
+		List<Competence> competences = competenceService.getAll();
 
 		assertEquals(2, competences.size());
 		verify(competenceRepository, times(1)).findAll();
 	}
 
 	@Test
-	void testGetCompetenceById_Success() {
+	void testGetById_Success() {
 		when(competenceRepository.findById("1")).thenReturn(Optional.of(competence1));
 
-		Competence competence = competenceService.getCompetenceById("1");
+		Competence competence = competenceService.getById("1");
 
 		assertNotNull(competence);
 		assertEquals("1", competence.getId());
@@ -72,10 +72,10 @@ public class CompetenceServiceTest {
 	}
 
 	@Test
-	void testGetCompetenceById_NotFound() {
+	void testGetById_NotFound() {
 		when(competenceRepository.findById("3")).thenReturn(Optional.empty());
 
-		assertThrows(ResourceNotFoundException.class, () -> competenceService.getCompetenceById("3"));
+		assertThrows(ResourceNotFoundException.class, () -> competenceService.getById("3"));
 
 		verify(competenceRepository, times(1)).findById("3");
 	}
@@ -93,11 +93,11 @@ public class CompetenceServiceTest {
 	}
 
 	@Test
-	void testUpdateCompetence_Success() {
+	void testUpdate_Success() {
 		when(competenceRepository.findById("1")).thenReturn(Optional.of(competence1));
 		when(competenceRepository.save(any(Competence.class))).thenReturn(competence1);
 
-		Competence updatedCompetence = competenceService.updateCompetence("1", competence1);
+		Competence updatedCompetence = competenceService.update("1", competence1);
 
 		assertNotNull(updatedCompetence);
 		assertEquals("Spring Boot", updatedCompetence.getLibelle());
@@ -106,21 +106,21 @@ public class CompetenceServiceTest {
 	}
 
 	@Test
-	void testDeleteCompetenceById_Success() {
+	void testDeleteById_Success() {
 		when(competenceRepository.existsById("1")).thenReturn(true);
 		 doNothing().when(competenceRepository).deleteById("1");
 
-		assertDoesNotThrow(() -> competenceService.deleteCompetenceById("1"));
+		assertDoesNotThrow(() -> competenceService.deleteById("1"));
 
 		verify(competenceRepository, times(1)).existsById("1");
 		verify(competenceRepository, times(1)).deleteById("1");
 	}
 
 	@Test
-	void testDeleteCompetenceById_NotFound() {
+	void testDeleteById_NotFound() {
 		when(competenceRepository.existsById("3")).thenReturn(false);
 
-		assertThrows(ResourceNotFoundException.class, () -> competenceService.deleteCompetenceById("3"));
+		assertThrows(ResourceNotFoundException.class, () -> competenceService.deleteById("3"));
 
 		verify(competenceRepository, times(1)).existsById("3");
 		verify(competenceRepository, times(0)).deleteById("3");

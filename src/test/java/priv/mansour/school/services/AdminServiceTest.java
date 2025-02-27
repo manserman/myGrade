@@ -26,7 +26,7 @@ public class AdminServiceTest {
 	AdminRepository adminRepository;
 
 	@InjectMocks
-	AdminService adminService;
+	AdminServiceImpl adminService;
 
 	Admin admin1;
 	Admin admin2;

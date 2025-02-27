@@ -19,23 +19,23 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 import priv.mansour.school.entity.Admin;
 import priv.mansour.school.logger.GlobalLogger;
-import priv.mansour.school.services.AdminService;
+import priv.mansour.school.services.AdminServiceImpl;
 
 @RestController
 @RequestMapping("/admins")
 public class AdminController {
 
-	private final AdminService adminService;
+	private final AdminServiceImpl adminService;
 
 	@Autowired
-	public AdminController(AdminService adminService) {
+	public AdminController(AdminServiceImpl adminService) {
 		this.adminService = adminService;
 	}
 
 	@PostMapping("/new")
 	public ResponseEntity<Admin> addAdmin(@Valid @RequestBody Admin admin) {
 		GlobalLogger.infoCreate(ADMIN, admin);
-		Admin createdAdmin = adminService.addAdmin(admin);
+		Admin createdAdmin = adminService.add(admin);
 		return ResponseEntity.status(HttpStatus.CREATED).body(createdAdmin);
 
 	}
@@ -43,21 +43,21 @@ public class AdminController {
 	@GetMapping
 	public ResponseEntity<List<Admin>> getAllAdmins() {
 		GlobalLogger.infoReadAll(ADMIN);
-		List<Admin> admins = adminService.getAllAdmins();
+		List<Admin> admins = adminService.getAll();
 		return ResponseEntity.ok(admins);
 	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<Admin> getAdminById(@PathVariable String id) {
 		GlobalLogger.infoRead(ADMIN, id);
-		Admin admin = adminService.getAdminById(id);
+		Admin admin = adminService.getById(id);
 		return ResponseEntity.ok(admin);
 	}
 
 	@PutMapping("/{id}")
 	public ResponseEntity<Admin> updateAdmin(@PathVariable String id, @Valid @RequestBody Admin updatedAdmin) {
 		GlobalLogger.infoUpdate(ADMIN, id, updatedAdmin);
-		Admin updated = adminService.updateAdmin(id, updatedAdmin);
+		Admin updated = adminService.update(id, updatedAdmin);
 		return ResponseEntity.ok(updated);
 
 	}
@@ -65,7 +65,7 @@ public class AdminController {
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deleteAdminById(@PathVariable String id) {
 		GlobalLogger.infoDelete(ADMIN, id);
-		adminService.deleteAdminById(id);
+		adminService.deleteById(id);
 		return ResponseEntity.noContent().build();
 	}
 }

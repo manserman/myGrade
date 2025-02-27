@@ -17,58 +17,64 @@ import priv.mansour.school.repository.CompetenceRepository;
 
 @Service
 @Validated
-public class CompetenceService {
+public class CompetenceService implements ICompetenceService {
 
-	private final CompetenceRepository competenceRepository;
+    private final CompetenceRepository competenceRepository;
 
-	@Autowired
-	public CompetenceService(CompetenceRepository competenceRepository) {
-		this.competenceRepository = competenceRepository;
-	}
+    @Autowired
+    public CompetenceService(CompetenceRepository competenceRepository) {
+        this.competenceRepository = competenceRepository;
+    }
 
-	public Competence addCompetence(@Valid Competence competence) {
-		GlobalLogger.infoAction("Saving", COMPETENCE, competence);
-		Competence savedCompetence = competenceRepository.save(competence);
-		GlobalLogger.infoSuccess("Saved", COMPETENCE, savedCompetence);
-		return savedCompetence;
-	}
+    @Override
+    public Competence add(@Valid Competence competence) {
+        GlobalLogger.infoAction("Saving", COMPETENCE, competence);
+        Competence savedCompetence = competenceRepository.save(competence);
+        GlobalLogger.infoSuccess("Saved", COMPETENCE, savedCompetence);
+        return savedCompetence;
+    }
 
-	public List<Competence> getAllCompetences() {
-		GlobalLogger.infoAction("Fetching all", COMPETENCE, "Retrieving all competences from database");
-		List<Competence> competences = competenceRepository.findAll();
-		GlobalLogger.infoSuccess("Fetched all", COMPETENCE, competences.size() + " competences found");
-		return competences;
-	}
+    @Override
+    public List<Competence> getAll() {
+        GlobalLogger.infoAction("Fetching all", COMPETENCE, "Retrieving all competences from database");
+        List<Competence> competences = competenceRepository.findAll();
+        GlobalLogger.infoSuccess("Fetched all", COMPETENCE, competences.size() + " competences found");
+        return competences;
+    }
 
-	public Competence getCompetenceById(@NotBlank String id) {
-		GlobalLogger.infoAction("Fetching", COMPETENCE, "ID: " + id);
-		return competenceRepository.findById(id).orElseThrow(
-				() -> new ResourceNotFoundException(COMPETENCE, "READ", "Competence not found for ID: " + id));
-	}
+    @Override
+    public Competence getById(@NotBlank String id) {
+        GlobalLogger.infoAction("Fetching", COMPETENCE, "ID: " + id);
+        return competenceRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException(COMPETENCE, "READ", "Competence not found for ID: " + id));
+    }
 
-	public Competence getCompetenceByLibelle(@NotBlank String libelle) {
-		GlobalLogger.infoAction("Fetching", COMPETENCE, "Libelle: " + libelle);
-		return competenceRepository.findByLibelle(libelle).orElseThrow(() -> new ResourceNotFoundException(COMPETENCE,
-				"READ", "Competence not found for libelle: " + libelle));
-	}
+    @Override
+    public Competence getCompetenceByLibelle(@NotBlank String libelle) {
+        GlobalLogger.infoAction("Fetching", COMPETENCE, "Libelle: " + libelle);
+        return competenceRepository.findByLibelle(libelle).orElseThrow(() -> new ResourceNotFoundException(COMPETENCE,
+                "READ", "Competence not found for libelle: " + libelle));
+    }
 
-	public Competence updateCompetence(@NotBlank String id, @Valid Competence updatedCompetence) {
-		GlobalLogger.infoAction("Updating", COMPETENCE, "ID: " + id);
+    @Override
+    public Competence update(@NotBlank String id, @Valid Competence updatedCompetence) {
+        GlobalLogger.infoAction("Updating", COMPETENCE, "ID: " + id);
 
-		Competence competence = getCompetenceById(id);
-		Competence updated = competenceRepository.save(competence);
-		GlobalLogger.infoSuccess("Updated", COMPETENCE, id);
-		return updated;
-	}
+        Competence competence = getById(id);
+        Competence updated = competenceRepository.save(competence);
+        GlobalLogger.infoSuccess("Updated", COMPETENCE, id);
+        return updated;
+    }
 
-	public void deleteCompetenceById(@NotBlank String id) {
-		GlobalLogger.infoAction("Deleting", COMPETENCE, "ID: " + id);
+    @Override
+    public void deleteById(@NotBlank String id) {
+        GlobalLogger.infoAction("Deleting", COMPETENCE, "ID: " + id);
 
-		if (!competenceRepository.existsById(id)) {
-			throw new ResourceNotFoundException(COMPETENCE, "DELETE", "Competence not found for ID: " + id);
-		}
+        if (!competenceRepository.existsById(id)) {
+            throw new ResourceNotFoundException(COMPETENCE, "DELETE", "Competence not found for ID: " + id);
+        }
 
-		competenceRepository.deleteById(id);
-		GlobalLogger.infoSuccess("Deleted", COMPETENCE, id);
-	}
+        competenceRepository.deleteById(id);
+        GlobalLogger.infoSuccess("Deleted", COMPETENCE, id);
+    }
 }

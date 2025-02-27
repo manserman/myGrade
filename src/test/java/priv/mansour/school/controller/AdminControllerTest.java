@@ -29,7 +29,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import priv.mansour.school.entity.Admin;
 import priv.mansour.school.exceptions.ResourceNotFoundException;
-import priv.mansour.school.services.AdminService;
+import priv.mansour.school.services.AdminServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 class AdminControllerTest {
@@ -37,7 +37,7 @@ class AdminControllerTest {
 	private MockMvc mockMvc;
 
 	@Mock
-	private AdminService adminService;
+	private AdminServiceImpl adminService;
 
 	@InjectMocks
 	private AdminController adminController;

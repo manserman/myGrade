@@ -34,21 +34,21 @@ public class CompetenceController {
 	@PostMapping("/new")
 	public ResponseEntity<Competence> addCompetence(@RequestBody Competence competence) {
 		GlobalLogger.infoCreate(COMPETENCE, competence);
-		Competence createdCompetence = competenceService.addCompetence(competence);
+		Competence createdCompetence = competenceService.add(competence);
 		return ResponseEntity.ok(createdCompetence);
 	}
 
 	@GetMapping
 	public ResponseEntity<List<Competence>> getAllCompetences() {
 		GlobalLogger.infoReadAll(COMPETENCE);
-		List<Competence> competences = competenceService.getAllCompetences();
+		List<Competence> competences = competenceService.getAll();
 		return ResponseEntity.ok(competences);
 	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<Competence> getCompetenceById(@PathVariable String id) {
 		GlobalLogger.infoRead(COMPETENCE, id);
-		Competence competence = competenceService.getCompetenceById(id);
+		Competence competence = competenceService.getById(id);
 		return ResponseEntity.ok(competence);
 	}
 
@@ -63,14 +63,14 @@ public class CompetenceController {
 	public ResponseEntity<Competence> updateCompetence(@PathVariable String id,
 			@RequestBody Competence updatedCompetence) {
 		GlobalLogger.infoUpdate(COMPETENCE, id, updatedCompetence);
-		Competence updated = competenceService.updateCompetence(id, updatedCompetence);
+		Competence updated = competenceService.update(id, updatedCompetence);
 		return ResponseEntity.ok(updated);
 	}
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deleteCompetenceById(@PathVariable String id) {
 		GlobalLogger.infoDelete(COMPETENCE, id);
-		competenceService.deleteCompetenceById(id);
+		competenceService.deleteById(id);
 		return ResponseEntity.noContent().build();
 	}
 }
