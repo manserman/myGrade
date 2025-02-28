@@ -1,21 +1,22 @@
 package priv.mansour.school.controller;
 
-import static priv.mansour.school.utils.Constants.STUDENT;
-
-import java.util.List;
-
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
 import priv.mansour.school.entity.Student;
 import priv.mansour.school.logger.GlobalLogger;
 import priv.mansour.school.services.IStudentService;
 
+import java.util.List;
+
+import static priv.mansour.school.utils.Constants.STUDENT;
+
+@Validated
 @RestController
 @RequestMapping("/students")
 public class StudentController {

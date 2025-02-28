@@ -1,23 +1,18 @@
 package priv.mansour.school.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 import priv.mansour.school.entity.Competence;
 import priv.mansour.school.entity.Student;
 import priv.mansour.school.enums.ResultatEnum;
 import priv.mansour.school.logger.GlobalLogger;
 import priv.mansour.school.services.StudentResultService;
 
+@Validated
 @RestController
 @RequestMapping("/students/results")
 public class StudentResultController {
