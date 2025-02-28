@@ -44,7 +44,7 @@ public class StudentServiceImplTest {
 	@Test
 	public void testAddStudent_Success() {
 		when(studentRepository.save(any(Student.class))).thenReturn(student1);
-		Student savedStudent = studentServiceImpl.addStudent(student1);
+		Student savedStudent = studentServiceImpl.add(student1);
 		assertEquals("John", savedStudent.getNom());
 		verify(studentRepository, times(1)).save(student1);
 	}
@@ -52,7 +52,7 @@ public class StudentServiceImplTest {
 	@Test
 	public void testGetAllStudents_Success() {
 		when(studentRepository.findAll()).thenReturn(Arrays.asList(student1, student2));
-		List<Student> students = studentServiceImpl.getAllStudents();
+		List<Student> students = studentServiceImpl.getAll();
 		assertEquals(2, students.size());
 		verify(studentRepository, times(1)).findAll();
 	}
@@ -60,7 +60,7 @@ public class StudentServiceImplTest {
 	@Test
 	public void testGetStudentById_Success() {
 		when(studentRepository.findById("1")).thenReturn(Optional.of(student1));
-		Student foundStudent = studentServiceImpl.getStudentById("1");
+		Student foundStudent = studentServiceImpl.getById("1");
 		assertEquals("John", foundStudent.getNom());
 		verify(studentRepository, times(1)).findById("1");
 	}
@@ -68,7 +68,7 @@ public class StudentServiceImplTest {
 	@Test
 	public void testGetStudentById_Fail() {
 		when(studentRepository.findById("1")).thenReturn(Optional.empty());
-		assertThrows(ResourceNotFoundException.class, () -> studentServiceImpl.getStudentById("1"));
+		assertThrows(ResourceNotFoundException.class, () -> studentServiceImpl.getById("1"));
 		verify(studentRepository, times(1)).findById("1");
 	}
 
@@ -76,7 +76,7 @@ public class StudentServiceImplTest {
 	public void testUpdateStudent_Success() {
 		when(studentRepository.findById("1")).thenReturn(Optional.of(student1));
 		when(studentRepository.save(any(Student.class))).thenReturn(student1);
-		Student updatedStudent = studentServiceImpl.updateStudent("1", student1);
+		Student updatedStudent = studentServiceImpl.update("1", student1);
 		assertEquals("John", updatedStudent.getNom());
 		verify(studentRepository, times(1)).save(student1);
 		verify(studentRepository, times(1)).findById("1");
@@ -86,14 +86,14 @@ public class StudentServiceImplTest {
 	public void testDeleteStudentById_Success() {
 		when(studentRepository.existsById("1")).thenReturn(true);
 		doNothing().when(studentRepository).deleteById("1");
-		studentServiceImpl.deleteStudentById("1");
+		studentServiceImpl.deleteById("1");
 		verify(studentRepository, times(1)).deleteById("1");
 	}
 
 	@Test
 	public void testDeleteStudentById_Fail() {
 		when(studentRepository.existsById("1")).thenReturn(false);
-		assertThrows(ResourceNotFoundException.class, () -> studentServiceImpl.deleteStudentById("1"));
+		assertThrows(ResourceNotFoundException.class, () -> studentServiceImpl.deleteById("1"));
 		verify(studentRepository, times(0)).deleteById("1");
 	}
 }
