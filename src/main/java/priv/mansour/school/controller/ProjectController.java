@@ -25,7 +25,7 @@ public class ProjectController {
 		this.projectService = projectService;
 	}
 
-	@PostMapping("/new")
+	@PostMapping
 	public ResponseEntity<Project> addProject(@RequestBody Project project) {
 		GlobalLogger.infoCreate(PROJECT, "Creating new project: " + project.getLibelle());
 		Project createdProject = projectService.add(project);
