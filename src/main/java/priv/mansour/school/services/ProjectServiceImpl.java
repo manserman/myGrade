@@ -15,11 +15,10 @@ import priv.mansour.school.entity.Competence;
 import priv.mansour.school.entity.Project;
 import priv.mansour.school.exceptions.DuplicateKeyException;
 import priv.mansour.school.exceptions.ResourceNotFoundException;
-import priv.mansour.school.logger.GlobalLogger;
 import priv.mansour.school.repository.ProjectRepository;
 
-@Validated
 @Service
+@Validated
 public class ProjectServiceImpl implements IProjectService {
 
 	private final ProjectRepository projectRepository;
@@ -31,98 +30,66 @@ public class ProjectServiceImpl implements IProjectService {
 
 	@Override
 	public Project add(@Valid Project project) {
-		GlobalLogger.infoAction("Saving", PROJECT, project);
-		Project savedProject = projectRepository.save(project);
-		GlobalLogger.infoSuccess("Saved", PROJECT, savedProject); 
-		return savedProject;
+		try {
+			return projectRepository.save(project);
+		} catch (org.springframework.dao.DuplicateKeyException e) {
+			throw new DuplicateKeyException("Project already exists", PROJECT, project.getId());
+		}
 	}
 
 	@Override
 	public List<Project> getAll() {
-		GlobalLogger.infoAction("Fetching all", PROJECT, "Retrieving all projects from database");
-		List<Project> projects = projectRepository.findAll();
-		GlobalLogger.infoSuccess("Fetched all", PROJECT, projects.size() + " projects found");
-		return projects;
+		return projectRepository.findAll();
 	}
+
 	@Override
 	public Project getById(@NotBlank String id) {
-		GlobalLogger.infoAction("Fetching", PROJECT, "ID: " + id);
 		return projectRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException(PROJECT, "READ", "Project not found for ID: " + id));
 	}
+
 	@Override
 	public Project findByLibelle(@NotBlank String libelle) {
-		GlobalLogger.infoAction("Fetching", PROJECT, "Libelle: " + libelle);
-		return projectRepository.findByLibelle(libelle).orElseThrow(
-				() -> new ResourceNotFoundException(PROJECT, "READ", "Project not found for libelle: " + libelle));
+		return projectRepository.findByLibelle(libelle)
+				.orElseThrow(() -> new ResourceNotFoundException(PROJECT, "READ", "Project not found for libelle: " + libelle));
 	}
+
 	@Override
 	public Project update(@NotBlank String id, @Valid Project updatedProject) {
-		GlobalLogger.infoAction("Updating", PROJECT, "ID: " + id);
-
 		Project project = getById(id);
-
 		project.setCompetences(updatedProject.getCompetences());
-
-		Project updated = projectRepository.save(project);
-		GlobalLogger.infoSuccess("Updated", PROJECT, id);
-		return updated;
+		return projectRepository.save(project);
 	}
+
 	@Override
 	public void deleteById(@NotBlank String id) {
-		GlobalLogger.infoAction("Deleting", PROJECT, "ID: " + id);
-
 		if (!projectRepository.existsById(id)) {
 			throw new ResourceNotFoundException(PROJECT, "DELETE", "Project not found for ID: " + id);
 		}
-
 		projectRepository.deleteById(id);
-		GlobalLogger.infoSuccess("Deleted", PROJECT, id);
 	}
 
 	public Project addCompetenceToProject(@NotBlank String projectId, @Valid Competence competence) {
-		GlobalLogger.infoAction("Adding Competence", PROJECT,
-				"Project ID: " + projectId + " Competence: " + competence.getLibelle());
-
 		Project project = getById(projectId);
 
 		if (project.getCompetences() == null) {
 			project.setCompetences(new ArrayList<>());
 		}
 
-		boolean projectExists = project.getCompetences().stream()
+		boolean competenceExists = project.getCompetences().stream()
 				.anyMatch(existingCompetence -> existingCompetence.getLibelle().equals(competence.getLibelle()));
 
-		if (projectExists) {
-			GlobalLogger.warnDuplicate("Competence",
-					"Competence [" + competence.getLibelle() + "] already exists in project [" + projectId + "]");
+		if (competenceExists) {
 			throw new DuplicateKeyException("Competence already exists in this project.", "Project", projectId);
 		}
 
 		project.getCompetences().add(competence);
-		Project updatedProject = projectRepository.save(project);
-
-		GlobalLogger.infoSuccess("Added Competence", PROJECT,
-				"Project ID: " + projectId + " Competence: " + competence.getLibelle());
-
-		return updatedProject;
+		return projectRepository.save(project);
 	}
 
 	public List<Competence> getAllCompetences(@NotBlank String projectId) {
-		GlobalLogger.infoAction("Fetching Competences", PROJECT, "Project ID: " + projectId);
-
 		Project project = getById(projectId);
-
-		List<Competence> competences = project.getCompetences();
-
-		if (competences == null || competences.isEmpty()) {
-			GlobalLogger.warnNotFound("Competences", "No competences found for project [" + projectId + "]");
-		} else {
-			GlobalLogger.infoSuccess("Fetched Competences", PROJECT,
-					"Project ID: " + projectId + " - " + competences.size() + " competences found");
-		}
-
-		return competences;
+		return project.getCompetences() == null ? new ArrayList<>() : project.getCompetences();
 	}
-
 }
+

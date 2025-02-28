@@ -1,23 +1,22 @@
 package priv.mansour.school.exceptions;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import lombok.extern.slf4j.Slf4j;
 import priv.mansour.school.logger.GlobalLogger;
-
+@Slf4j
 @SuppressWarnings("serial")
 public class ResourceNotFoundException extends RuntimeException {
 
-	private static final Logger logger = LoggerFactory.getLogger(ResourceNotFoundException.class);
+
 
 	public ResourceNotFoundException(String message) {
 		super(message);
-		logger.error("Resource not found with message: {}", message);
+		log.warn("Resource not found with message: {}", message);
 	}
 
 	public ResourceNotFoundException(String message, Throwable cause) {
 		super(message, cause);
-		logger.error("Resource not found with messag: {}", message, cause);
+		log.warn("Resource not found with message: {}", message, cause);
 	}
 
 	public ResourceNotFoundException(String message, String entity, String id) {

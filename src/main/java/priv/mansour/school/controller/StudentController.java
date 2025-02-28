@@ -33,7 +33,6 @@ public class StudentController {
 
     @PostMapping
     public ResponseEntity<Student> addStudent(@RequestBody Student student) {
-        GlobalLogger.infoCreate(STUDENT, student);
         return ResponseEntity.ok(studentService.add(student));
     }
 

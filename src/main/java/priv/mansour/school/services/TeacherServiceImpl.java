@@ -4,6 +4,7 @@ import static priv.mansour.school.utils.Constants.TEACHER;
 
 import java.util.List;
 
+import com.mongodb.DuplicateKeyException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -17,53 +18,49 @@ import priv.mansour.school.repository.TeacherRepository;
 
 @Service
 @Validated
-public class TeacherServiceImpl implements IUserService<Teacher>{
+public class TeacherServiceImpl implements IUserService<Teacher> {
 
-	private final TeacherRepository teacherRepository;
+    private final TeacherRepository teacherRepository;
 
-	@Autowired
-	public TeacherServiceImpl(TeacherRepository teacherRepository) {
-		this.teacherRepository = teacherRepository;
-	}
+    @Autowired
+    public TeacherServiceImpl(TeacherRepository teacherRepository) {
+        this.teacherRepository = teacherRepository;
+    }
 
-	public Teacher add(@Valid Teacher teacher) {
-		GlobalLogger.infoAction("Saving", TEACHER, teacher);
-		Teacher savedTeacher = teacherRepository.save(teacher);
-		GlobalLogger.infoSuccess("Saved", TEACHER, savedTeacher);
-		return savedTeacher;
-	}
+    public Teacher add(@Valid Teacher teacher) {
+        try {
+            return teacherRepository.save(teacher);
+        } catch (DuplicateKeyException e) {
+            throw new priv.mansour.school.exceptions.DuplicateKeyException("Teacher already in base", e);
+        }
 
-	public List<Teacher> getAll() {
-		GlobalLogger.infoAction("Fetching all", TEACHER, "Retrieving all teachers from database");
-		List<Teacher> teachers = teacherRepository.findAll();
-		GlobalLogger.infoSuccess("Fetched all", TEACHER, teachers.size() + " teachers found");
-		return teachers;
-	}
+    }
 
-	public Teacher getById(@NotBlank String id) {
-		GlobalLogger.infoAction("Fetching", TEACHER, "ID: " + id);
-		return teacherRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException(TEACHER, "READ", "Teacher not found for ID: " + id));
-	}
+    public List<Teacher> getAll() {
+        return teacherRepository.findAll();
 
-	@Override
-	public Teacher update(String s, Teacher updatedEntity) {
-		return null;
-	}
+    }
 
-	public void deleteById(@NotBlank String id) {
-		GlobalLogger.infoAction("Deleting", TEACHER, "ID: " + id);
+    public Teacher getById(@NotBlank String id) {
+        return teacherRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(TEACHER, "READ", "Teacher not found for ID: " + id));
+    }
 
-		if (!teacherRepository.existsById(id)) {
-			throw new ResourceNotFoundException(TEACHER, "DELETE", "Teacher not found for ID: " + id);
-		}
+    @Override
+    public Teacher update(String s, Teacher updatedEntity) {
+        return null;
+    }
 
-		teacherRepository.deleteById(id);
-		GlobalLogger.infoSuccess("Deleted", TEACHER, id);
-	}
+    public void deleteById(@NotBlank String id) {
 
-	@Override
-	public Teacher findByEmail(String mail) {
-		return null;
-	}
+        if (!teacherRepository.existsById(id)) {
+            throw new ResourceNotFoundException(TEACHER, "DELETE", "Teacher not found for ID: " + id);
+        }
+        teacherRepository.deleteById(id);
+    }
+
+    @Override
+    public Teacher findByEmail(String mail) {
+        return null;
+    }
 }

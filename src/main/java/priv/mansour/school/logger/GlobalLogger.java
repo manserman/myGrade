@@ -18,7 +18,7 @@ public class GlobalLogger {
 	}
 
 	public static void infoRead(String entity, String id) {
-		log.info("[{}] Received GET request for {} - ID: {}", entity, id);
+		log.info("[{}] Received GET request for {} - : {}", entity, id);
 	}
 
 	public static void infoReadAll(String entity) {
