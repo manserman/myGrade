@@ -108,7 +108,7 @@ class CompetenceControllerTest {
         competence1 = new Competence("1", "", "comp1");
         comp1Json = objectMapper.writeValueAsString(competence1);
         when(competenceService.add(any(Competence.class))).thenReturn(competence1);
-        mockMvc.perform(post("/competences/new")
+        mockMvc.perform(post("/competences")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(comp1Json))
                 .andExpect(status().isBadRequest())
