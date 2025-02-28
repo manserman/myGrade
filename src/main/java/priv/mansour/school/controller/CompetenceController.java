@@ -34,14 +34,14 @@ public class CompetenceController {
         this.competenceService = competenceService;
     }
 
-    @PostMapping("/new")
+    @PostMapping
     public ResponseEntity<Competence> addCompetence(@Valid @RequestBody Competence competence) {
         GlobalLogger.infoCreate(COMPETENCE, competence);
         Competence createdCompetence = competenceService.add(competence);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdCompetence);
     }
 
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<List<Competence>> getAllCompetences() {
         GlobalLogger.infoReadAll(COMPETENCE);
         List<Competence> competences = competenceService.getAll();

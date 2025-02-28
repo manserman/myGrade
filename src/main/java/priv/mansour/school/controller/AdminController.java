@@ -33,7 +33,7 @@ public class AdminController {
 		this.adminService = adminService;
 	}
 
-	@PostMapping()
+	@PostMapping
 	public ResponseEntity<Admin> addAdmin(@Valid @RequestBody Admin admin) {
 		GlobalLogger.infoCreate(ADMIN, admin);
 		Admin createdAdmin = adminService.add(admin);
