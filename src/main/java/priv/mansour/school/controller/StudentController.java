@@ -30,7 +30,7 @@ public class StudentController {
 		this.studentService = studentService;
 	}
 
-	@PostMapping("/new")
+	@PostMapping
 	public ResponseEntity<Student> addStudent(@RequestBody Student student) {
 		GlobalLogger.infoCreate(STUDENT, student);
 		return ResponseEntity.ok(studentService.addStudent(student));
