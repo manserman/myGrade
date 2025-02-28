@@ -16,10 +16,8 @@ import priv.mansour.school.entity.Competence;
 import priv.mansour.school.exceptions.DuplicateKeyException;
 import priv.mansour.school.exceptions.ResourceNotFoundException;
 import priv.mansour.school.services.CompetenceServiceImpl;
-
 import java.util.ArrayList;
 import java.util.Arrays;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -67,7 +65,6 @@ class CompetenceControllerTest {
     @Test
     void addCompetence_Duplicate() throws Exception {
         when(competenceService.add(any(Competence.class))).thenThrow(new DuplicateKeyException("Already in Base"));
-
         mvcResult = mockMvc.perform(post("/competences/new")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(comp1Json))
@@ -78,10 +75,9 @@ class CompetenceControllerTest {
 
         assertInstanceOf(DuplicateKeyException.class, mvcResult.getResolvedException());
     }
-
     @Test
-    void addCompetence_NotValid_VoidLibelle() throws Exception {
-        competence1 = new Competence("1", "Premiere competence", "");
+    void addCompetence_NotValid_BlankDescriptionAndLibelle() throws Exception {
+        competence1 = new Competence("1", "", "");
         comp1Json = objectMapper.writeValueAsString(competence1);
         when(competenceService.add(any(Competence.class))).thenReturn(competence1);
 
@@ -90,27 +86,48 @@ class CompetenceControllerTest {
                         .content(comp1Json))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.libelle").value("Veuillez fournir un libelle pour le projet."))
+                .andExpect(jsonPath("$.description").value("Veuillez fournir une description pour le projet."));
+
+    }
+
+
+    @Test
+    void addCompetence_NotValid_VoidLibelle() throws Exception {
+        competence1 = new Competence("1", "Premiere competence", "");
+        comp1Json = objectMapper.writeValueAsString(competence1);
+        when(competenceService.add(any(Competence.class))).thenReturn(competence1);
+        mockMvc.perform(post("/competences/new")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(comp1Json))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.libelle").value("Veuillez fournir un libelle pour le projet."))
         ;
-
-
+    }
+    @Test
+    void addCompetence_NotValid_BlankDescription() throws Exception {
+        competence1 = new Competence("1", "", "comp1");
+        comp1Json = objectMapper.writeValueAsString(competence1);
+        when(competenceService.add(any(Competence.class))).thenReturn(competence1);
+        mockMvc.perform(post("/competences/new")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(comp1Json))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.description").value("Veuillez fournir une description pour le projet."));
     }
 
     @Test
     void getAllCompetences_WithData() throws Exception {
         String listComps = objectMapper.writeValueAsString(Arrays.asList(competence1, competence2));
         when(competenceService.getAll()).thenReturn(Arrays.asList(competence1, competence2));
-
         mvcResult = mockMvc.perform(get("/competences"))
                 .andExpect(status().isOk())
                 .andReturn();
-
         assertEquals(listComps, mvcResult.getResponse().getContentAsString());
     }
 
     @Test
     void getAllCompetences_WithoutData() throws Exception {
         when(competenceService.getAll()).thenReturn(new ArrayList<>());
-
         mvcResult = mockMvc.perform(get("/competences"))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -121,7 +138,6 @@ class CompetenceControllerTest {
     @Test
     void updateCompetence_Success() throws Exception {
         when(competenceService.update(eq("1"), any(Competence.class))).thenReturn(competence1);
-
         mvcResult = mockMvc.perform(put("/competences/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(comp1Json))
@@ -134,33 +150,67 @@ class CompetenceControllerTest {
     @Test
     void updateCompetence_NotFound() throws Exception {
         when(competenceService.update(eq("1"), any(Competence.class))).thenThrow(new ResourceNotFoundException("Competence not found"));
-
         mvcResult = mockMvc.perform(put("/competences/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(comp1Json))
                 .andExpect(status().isNotFound())
                 .andReturn();
-
         Exception exception = mvcResult.getResolvedException();
         assertNotNull(exception);
         assertInstanceOf(ResourceNotFoundException.class, exception);
         assertEquals("Competence not found", exception.getMessage());
     }
+    @Test
+    void updateCompetence_NotValid_BlankDescriptionAndLibelle() throws Exception {
+        competence1 = new Competence("1", "", "");
+        comp1Json = objectMapper.writeValueAsString(competence1);
+        when(competenceService.add(any(Competence.class))).thenReturn(competence1);
+
+        mockMvc.perform(put("/competences/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(comp1Json))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.libelle").value("Veuillez fournir un libelle pour le projet."))
+                .andExpect(jsonPath("$.description").value("Veuillez fournir une description pour le projet."));
+
+    }
+
+
+    @Test
+    void updateCompetence_NotValid_VoidLibelle() throws Exception {
+        competence1 = new Competence("1", "Premiere competence", "");
+        comp1Json = objectMapper.writeValueAsString(competence1);
+        when(competenceService.add(any(Competence.class))).thenReturn(competence1);
+        mockMvc.perform(put("/competences/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(comp1Json))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.libelle").value("Veuillez fournir un libelle pour le projet."))
+        ;
+    }
+    @Test
+    void updateCompetence_NotValid_BlankDescription() throws Exception {
+        competence1 = new Competence("1", "", "comp1");
+        comp1Json = objectMapper.writeValueAsString(competence1);
+        when(competenceService.add(any(Competence.class))).thenReturn(competence1);
+        mockMvc.perform(put("/competences/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(comp1Json))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.description").value("Veuillez fournir une description pour le projet."));
+    }
 
     @Test
     void deleteCompetenceById_Success() throws Exception {
         doNothing().when(competenceService).deleteById(eq("1"));
-
         mockMvc.perform(delete("/competences/1"))
                 .andExpect(status().isNoContent());
-
         verify(competenceService, times(1)).deleteById("1");
     }
 
     @Test
     void deleteCompetenceById_NotFound() throws Exception {
         doThrow(new ResourceNotFoundException("Competence not found")).when(competenceService).deleteById(eq("1"));
-
         mvcResult = mockMvc.perform(delete("/competences/1"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.error").value("Resource Not Found"))
