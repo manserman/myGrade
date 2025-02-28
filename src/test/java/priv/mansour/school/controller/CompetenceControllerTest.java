@@ -53,7 +53,7 @@ class CompetenceControllerTest {
     void addCompetence_Success() throws Exception {
         when(competenceService.add(any(Competence.class))).thenReturn(competence1);
 
-        mvcResult = mockMvc.perform(post("/competences/new")
+        mvcResult = mockMvc.perform(post("/competences")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(comp1Json))
                 .andExpect(status().isCreated())
@@ -65,7 +65,7 @@ class CompetenceControllerTest {
     @Test
     void addCompetence_Duplicate() throws Exception {
         when(competenceService.add(any(Competence.class))).thenThrow(new DuplicateKeyException("Already in Base"));
-        mvcResult = mockMvc.perform(post("/competences/new")
+        mvcResult = mockMvc.perform(post("/competences")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(comp1Json))
                 .andExpect(status().isConflict())
@@ -81,7 +81,7 @@ class CompetenceControllerTest {
         comp1Json = objectMapper.writeValueAsString(competence1);
         when(competenceService.add(any(Competence.class))).thenReturn(competence1);
 
-        mockMvc.perform(post("/competences/new")
+        mockMvc.perform(post("/competences")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(comp1Json))
                 .andExpect(status().isBadRequest())
@@ -96,7 +96,7 @@ class CompetenceControllerTest {
         competence1 = new Competence("1", "Premiere competence", "");
         comp1Json = objectMapper.writeValueAsString(competence1);
         when(competenceService.add(any(Competence.class))).thenReturn(competence1);
-        mockMvc.perform(post("/competences/new")
+        mockMvc.perform(post("/competences")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(comp1Json))
                 .andExpect(status().isBadRequest())
@@ -165,7 +165,6 @@ class CompetenceControllerTest {
         competence1 = new Competence("1", "", "");
         comp1Json = objectMapper.writeValueAsString(competence1);
         when(competenceService.add(any(Competence.class))).thenReturn(competence1);
-
         mockMvc.perform(put("/competences/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(comp1Json))
@@ -183,6 +182,7 @@ class CompetenceControllerTest {
         when(competenceService.add(any(Competence.class))).thenReturn(competence1);
         mockMvc.perform(put("/competences/1")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("utf-8")
                         .content(comp1Json))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.libelle").value("Veuillez fournir un libelle pour le projet."))

@@ -9,12 +9,13 @@ import jakarta.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import priv.mansour.school.entity.Competence;
 import priv.mansour.school.logger.GlobalLogger;
 import priv.mansour.school.services.ICompetenceService;
-
+@Validated
 @RestController
 @RequestMapping("/competences")
 public class CompetenceController {
