@@ -23,39 +23,36 @@ import priv.mansour.school.services.IUserService;
 @RequestMapping("/teachers")
 public class TeacherController {
 
-	private final IUserService<Teacher> teacherService;
+    private final IUserService<Teacher> teacherService;
 
-	@Autowired
-	public TeacherController(IUserService<Teacher> teacherService) {
-		this.teacherService = teacherService;
-	}
+    @Autowired
+    public TeacherController(IUserService<Teacher> teacherService) {
+        this.teacherService = teacherService;
+    }
 
-	@PostMapping
-	public ResponseEntity<Teacher> addTeacher(@Valid @RequestBody Teacher teacher) {
-		GlobalLogger.infoCreate(TEACHER, teacher);
-		return ResponseEntity.ok(teacherService.add(teacher));
-	}
+    @PostMapping
+    public ResponseEntity<Teacher> addTeacher(@Valid @RequestBody Teacher teacher) {
+        GlobalLogger.infoCreate(TEACHER, teacher);
+        return ResponseEntity.ok(teacherService.add(teacher));
+    }
 
-	@GetMapping
-	public ResponseEntity<List<Teacher>> getAllTeachers() {
-		GlobalLogger.infoReadAll(TEACHER);
-		return ResponseEntity.ok(teacherService.getAll());
-	}
+    @GetMapping
+    public ResponseEntity<List<Teacher>> getAllTeachers() {
+        GlobalLogger.infoReadAll(TEACHER);
+        return ResponseEntity.ok(teacherService.getAll());
+    }
 
-	@GetMapping("/{id}")
-	public ResponseEntity<Teacher> getTeacherById(@PathVariable String id) {
-		GlobalLogger.infoRead(TEACHER, id);
-		return ResponseEntity.ok(teacherService.getById(id));
-	}
+    @GetMapping("/{id}")
+    public ResponseEntity<Teacher> getTeacherById(@PathVariable String id) {
+        GlobalLogger.infoRead(TEACHER, id);
+        return ResponseEntity.ok(teacherService.getById(id));
+    }
 
-	
 
-	
-
-	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> deleteTeacherById(@PathVariable String id) {
-		GlobalLogger.infoDelete(TEACHER, id);
-		teacherService.deleteById(id);
-		return ResponseEntity.noContent().build();
-	}
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteTeacherById(@PathVariable String id) {
+        GlobalLogger.infoDelete(TEACHER, id);
+        teacherService.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
 }
