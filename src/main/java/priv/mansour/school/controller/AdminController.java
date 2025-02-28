@@ -20,19 +20,20 @@ import jakarta.validation.Valid;
 import priv.mansour.school.entity.Admin;
 import priv.mansour.school.logger.GlobalLogger;
 import priv.mansour.school.services.AdminServiceImpl;
+import priv.mansour.school.services.IAdminService;
 
 @RestController
 @RequestMapping("/admins")
 public class AdminController {
 
-	private final AdminServiceImpl adminService;
+	private final IAdminService  adminService;
 
 	@Autowired
-	public AdminController(AdminServiceImpl adminService) {
+	public AdminController(IAdminService adminService) {
 		this.adminService = adminService;
 	}
 
-	@PostMapping("/new")
+	@PostMapping()
 	public ResponseEntity<Admin> addAdmin(@Valid @RequestBody Admin admin) {
 		GlobalLogger.infoCreate(ADMIN, admin);
 		Admin createdAdmin = adminService.add(admin);
