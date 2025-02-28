@@ -4,29 +4,22 @@ import static priv.mansour.school.utils.Constants.ADMIN;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import jakarta.validation.Valid;
 import priv.mansour.school.entity.Admin;
 import priv.mansour.school.logger.GlobalLogger;
-import priv.mansour.school.services.AdminServiceImpl;
 import priv.mansour.school.services.IAdminService;
 
 @RestController
 @RequestMapping("/admins")
 public class AdminController {
 
-	private final IAdminService  adminService;
+	private final IAdminService adminService;
 
 	@Autowired
 	public AdminController(IAdminService adminService) {
@@ -35,38 +28,41 @@ public class AdminController {
 
 	@PostMapping
 	public ResponseEntity<Admin> addAdmin(@Valid @RequestBody Admin admin) {
-		GlobalLogger.infoCreate(ADMIN, admin);
+		GlobalLogger.infoCreate(ADMIN, "Creating new admin: " + admin.getId());
 		Admin createdAdmin = adminService.add(admin);
+		GlobalLogger.infoSuccess("Created", ADMIN, "Admin ID: " + createdAdmin.getId());
 		return ResponseEntity.status(HttpStatus.CREATED).body(createdAdmin);
-
 	}
 
 	@GetMapping
 	public ResponseEntity<List<Admin>> getAllAdmins() {
 		GlobalLogger.infoReadAll(ADMIN);
 		List<Admin> admins = adminService.getAll();
+		GlobalLogger.infoSuccess("Fetched all", ADMIN, "Total admins: " + admins.size());
 		return ResponseEntity.ok(admins);
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<Admin> getAdminById(@PathVariable String id) {
-		GlobalLogger.infoRead(ADMIN, id);
+	public ResponseEntity<Admin> getAdminById(@PathVariable @NotBlank String id) {
+		GlobalLogger.infoRead(ADMIN, "Fetching admin by ID: " + id);
 		Admin admin = adminService.getById(id);
+		GlobalLogger.infoSuccess("Fetched by ID", ADMIN, "Admin ID: " + admin.getId());
 		return ResponseEntity.ok(admin);
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<Admin> updateAdmin(@PathVariable String id, @Valid @RequestBody Admin updatedAdmin) {
-		GlobalLogger.infoUpdate(ADMIN, id, updatedAdmin);
-		Admin updated = adminService.update(id, updatedAdmin);
-		return ResponseEntity.ok(updated);
-
+	public ResponseEntity<Admin> updateAdmin(@PathVariable @NotBlank String id, @Valid @RequestBody Admin adminToUpdate) {
+		GlobalLogger.infoUpdate(ADMIN, id, adminToUpdate);
+		Admin updatedAdmin = adminService.update(id, adminToUpdate);
+		GlobalLogger.infoSuccess("Updated", ADMIN, "Admin ID: " + updatedAdmin.getId());
+		return ResponseEntity.ok(updatedAdmin);
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> deleteAdminById(@PathVariable String id) {
-		GlobalLogger.infoDelete(ADMIN, id);
+	public ResponseEntity<Void> deleteAdminById(@PathVariable @NotBlank String id) {
+		GlobalLogger.infoDelete(ADMIN, "Deleting admin ID: " + id);
 		adminService.deleteById(id);
+		GlobalLogger.infoSuccess("Deleted", ADMIN, "Admin ID: " + id);
 		return ResponseEntity.noContent().build();
 	}
 }
