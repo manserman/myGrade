@@ -1,21 +1,20 @@
 package priv.mansour.school.services;
 
-import static priv.mansour.school.utils.Constants.PROJECT;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
-
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import priv.mansour.school.entity.Competence;
 import priv.mansour.school.entity.Project;
 import priv.mansour.school.exceptions.DuplicateKeyException;
 import priv.mansour.school.exceptions.ResourceNotFoundException;
 import priv.mansour.school.repository.ProjectRepository;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static priv.mansour.school.utils.Constants.PROJECT;
 
 @Service
 @Validated
@@ -72,10 +71,6 @@ public class ProjectServiceImpl implements IProjectService {
 	public Project addCompetenceToProject(@NotBlank String projectId, @Valid Competence competence) {
 		Project project = getById(projectId);
 
-		if (project.getCompetences() == null) {
-			project.setCompetences(new ArrayList<>());
-		}
-
 		boolean competenceExists = project.getCompetences().stream()
 				.anyMatch(existingCompetence -> existingCompetence.getLibelle().equals(competence.getLibelle()));
 
@@ -83,7 +78,7 @@ public class ProjectServiceImpl implements IProjectService {
 			throw new DuplicateKeyException("Competence already exists in this project.", "Project", projectId);
 		}
 
-		project.getCompetences().add(competence);
+		project.addCompetence(competence);
 		return projectRepository.save(project);
 	}
 

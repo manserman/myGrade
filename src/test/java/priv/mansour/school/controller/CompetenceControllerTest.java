@@ -16,8 +16,10 @@ import priv.mansour.school.entity.Competence;
 import priv.mansour.school.exceptions.DuplicateKeyException;
 import priv.mansour.school.exceptions.ResourceNotFoundException;
 import priv.mansour.school.services.CompetenceServiceImpl;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -58,8 +60,8 @@ class CompetenceControllerTest {
                         .content(comp1Json))
                 .andExpect(status().isCreated())
                 .andReturn();
-
         assertEquals(comp1Json, mvcResult.getResponse().getContentAsString());
+        verify(competenceService, times(1)).add(competence1);
     }
 
     @Test
@@ -72,9 +74,10 @@ class CompetenceControllerTest {
                 .andExpect(jsonPath("$.error").value("Duplicate Key"))
                 .andExpect(jsonPath("$.message").value("Already in Base"))
                 .andReturn();
-
         assertInstanceOf(DuplicateKeyException.class, mvcResult.getResolvedException());
+        verify(competenceService, times(1)).add(competence1);
     }
+
     @Test
     void addCompetence_NotValid_BlankDescriptionAndLibelle() throws Exception {
         competence1 = new Competence("1", "", "");
@@ -87,7 +90,7 @@ class CompetenceControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.libelle").value("Veuillez fournir un libelle pour le projet."))
                 .andExpect(jsonPath("$.description").value("Veuillez fournir une description pour le projet."));
-
+        verify(competenceService, times(0)).add(competence1);
     }
 
 
@@ -102,7 +105,9 @@ class CompetenceControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.libelle").value("Veuillez fournir un libelle pour le projet."))
         ;
+        verify(competenceService, times(0)).add(competence1);
     }
+
     @Test
     void addCompetence_NotValid_BlankDescription() throws Exception {
         competence1 = new Competence("1", "", "comp1");
@@ -113,6 +118,7 @@ class CompetenceControllerTest {
                         .content(comp1Json))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.description").value("Veuillez fournir une description pour le projet."));
+        verify(competenceService, times(0)).add(competence1);
     }
 
     @Test
@@ -123,6 +129,7 @@ class CompetenceControllerTest {
                 .andExpect(status().isOk())
                 .andReturn();
         assertEquals(listComps, mvcResult.getResponse().getContentAsString());
+        verify(competenceService, times(1)).getAll();
     }
 
     @Test
@@ -131,8 +138,8 @@ class CompetenceControllerTest {
         mvcResult = mockMvc.perform(get("/competences"))
                 .andExpect(status().isOk())
                 .andReturn();
-
         assertEquals("[]", mvcResult.getResponse().getContentAsString());
+        verify(competenceService, times(1)).getAll();
     }
 
     @Test
@@ -145,6 +152,7 @@ class CompetenceControllerTest {
                 .andReturn();
 
         assertEquals(comp1Json, mvcResult.getResponse().getContentAsString());
+        verify(competenceService, times(1)).update("1", competence1);
     }
 
     @Test
@@ -159,19 +167,21 @@ class CompetenceControllerTest {
         assertNotNull(exception);
         assertInstanceOf(ResourceNotFoundException.class, exception);
         assertEquals("Competence not found", exception.getMessage());
+        verify(competenceService, times(1)).update("1", competence1);
     }
+
     @Test
     void updateCompetence_NotValid_BlankDescriptionAndLibelle() throws Exception {
         competence1 = new Competence("1", "", "");
         comp1Json = objectMapper.writeValueAsString(competence1);
-        when(competenceService.add(any(Competence.class))).thenReturn(competence1);
+        when(competenceService.update(eq("1"), any(Competence.class))).thenReturn(competence1);
         mockMvc.perform(put("/competences/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(comp1Json))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.libelle").value("Veuillez fournir un libelle pour le projet."))
                 .andExpect(jsonPath("$.description").value("Veuillez fournir une description pour le projet."));
-
+        verify(competenceService, times(0)).update("1", competence1);
     }
 
 
@@ -179,7 +189,7 @@ class CompetenceControllerTest {
     void updateCompetence_NotValid_VoidLibelle() throws Exception {
         competence1 = new Competence("1", "Premiere competence", "");
         comp1Json = objectMapper.writeValueAsString(competence1);
-        when(competenceService.add(any(Competence.class))).thenReturn(competence1);
+        when(competenceService.update(eq("1"), any(Competence.class))).thenReturn(competence1);
         mockMvc.perform(put("/competences/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("utf-8")
@@ -187,17 +197,20 @@ class CompetenceControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.libelle").value("Veuillez fournir un libelle pour le projet."))
         ;
+        verify(competenceService, times(0)).update("1", competence1);
     }
+
     @Test
     void updateCompetence_NotValid_BlankDescription() throws Exception {
         competence1 = new Competence("1", "", "comp1");
         comp1Json = objectMapper.writeValueAsString(competence1);
-        when(competenceService.add(any(Competence.class))).thenReturn(competence1);
+        when(competenceService.update(eq("1"), any(Competence.class))).thenReturn(competence1);
         mockMvc.perform(put("/competences/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(comp1Json))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.description").value("Veuillez fournir une description pour le projet."));
+        verify(competenceService, times(0)).update("1", competence1);
     }
 
     @Test
