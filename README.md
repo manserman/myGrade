@@ -28,9 +28,8 @@ L'API sera disponible à l'adresse : http://localhost:8080.
 Liste des Endpoints
 Compétences
 Créer une compétence :
-
 Méthode : POST
-URL : /competences/new
+URL : /competences
 Exemple de Body (JSON) :
 json
 Always show details
@@ -41,16 +40,16 @@ Copy code
   "libelle": "Java",
   "description": "Langage de programmation orienté objet"
 }
+
 Lister toutes les compétences :
-
 Méthode : GET
-URL : /competences/all
-Récupérer une compétence par ID :
+URL : /competences
 
+Récupérer une compétence par ID :
 Méthode : GET
 URL : /competences/{id}
-Mettre à jour une compétence par ID :
 
+Mettre à jour une compétence par ID :
 Méthode : PUT
 URL : /competences/{id}
 Exemple de Body (JSON) :
@@ -62,15 +61,15 @@ Copy code
   "libelle": "Spring Boot",
   "description": "Framework de développement rapide pour Java"
 }
-Supprimer une compétence par ID :
 
+Supprimer une compétence par ID :
 Méthode : DELETE
 URL : /competences/{id}
 Étudiants
 Créer un étudiant :
 
 Méthode : POST
-URL : /students/new
+URL : /students
 Exemple de Body (JSON) :
 json
 Always show details
@@ -84,11 +83,10 @@ Copy code
   "competences": []
 }
 Lister tous les étudiants :
-
 Méthode : GET
-URL : /students/all
-Récupérer un étudiant par ID :
+URL : /students
 
+Récupérer un étudiant par ID :
 Méthode : GET
 URL : /students/{id}
 Mettre à jour un étudiant par ID :
@@ -104,8 +102,8 @@ Copy code
   "nom": "Smith",
   "prenom": "Jane"
 }
-Supprimer un étudiant par ID :
 
+Supprimer un étudiant par ID :
 Méthode : DELETE
 URL : /students/{id}
 Ajouter un projet à un étudiant :
@@ -122,8 +120,8 @@ Copy code
   "libelle": "Gestion de l'école",
   "description": "Un projet de gestion"
 }
-Ajouter une compétence à un étudiant :
 
+Ajouter une compétence à un étudiant :
 Méthode : POST
 URL : /students/{id}/competences
 Exemple de Body (JSON) :
@@ -135,15 +133,16 @@ Copy code
   "id": 1,
   "libelle": "Java"
 }
+
 Enseignants
+
 Créer un enseignant :
 
 Méthode : POST
-URL : /teachers/new
+URL : /teachers
 Exemple de Body (JSON) :
 json
 Always show details
-
 Copy code
 {
   "id": 1,
@@ -151,16 +150,16 @@ Copy code
   "prenom": "Alice",
   "projets": []
 }
+
 Lister tous les enseignants :
-
 Méthode : GET
-URL : /teachers/all
-Récupérer un enseignant par ID :
+URL : /teachers
 
+Récupérer un enseignant par ID :
 Méthode : GET
 URL : /teachers/{id}
-Mettre à jour un enseignant par ID :
 
+Mettre à jour un enseignant par ID :
 Méthode : PUT
 URL : /teachers/{id}
 Exemple de Body (JSON) :
@@ -172,12 +171,12 @@ Copy code
   "nom": "Johnson",
   "prenom": "Bob"
 }
-Supprimer un enseignant par ID :
 
+Supprimer un enseignant par ID :
 Méthode : DELETE
 URL : /teachers/{id}
-Ajouter un projet à un enseignant :
 
+Ajouter un projet à un enseignant :
 Méthode : POST
 URL : /teachers/{id}/projects
 Exemple de Body (JSON) :
@@ -190,11 +189,11 @@ Copy code
   "libelle": "Gestion de l'école",
   "description": "Un projet de gestion"
 }
+
 Projets
 Créer un projet :
-
 Méthode : POST
-URL : /projects/new
+URL : /projects
 Exemple de Body (JSON) :
 json
 Always show details
@@ -217,16 +216,16 @@ Copy code
     "prenom": "Alice"
   }
 }
+
 Lister tous les projets :
-
 Méthode : GET
-URL : /projects/all
-Récupérer un projet par ID :
+URL : /projects
 
+Récupérer un projet par ID :
 Méthode : GET
 URL : /projects/{id}
-Mettre à jour un projet par ID :
 
+Mettre à jour un projet par ID :
 Méthode : PUT
 URL : /projects/{id}
 Exemple de Body (JSON) :
@@ -238,12 +237,12 @@ Copy code
   "libelle": "Mise à jour projet",
   "description": "Description mise à jour"
 }
-Supprimer un projet par ID :
 
+Supprimer un projet par ID :
 Méthode : DELETE
 URL : /projects/{id}
-Ajouter une compétence à un projet :
 
+Ajouter une compétence à un projet :
 Méthode : POST
 URL : /projects/{id}/competences
 Exemple de Body (JSON) :
@@ -256,6 +255,7 @@ Copy code
   "libelle": "Spring Boot",
   "description": "Framework de développement rapide pour Java"
 }
+
 Structure du projet
 Controller : Gère les requêtes HTTP et les réponses.
 Service : Contient la logique métier.
