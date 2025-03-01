@@ -12,6 +12,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import priv.mansour.school.entity.Competence;
 import priv.mansour.school.entity.Project;
 import priv.mansour.school.exceptions.DuplicateKeyException;
@@ -42,7 +43,7 @@ class ProjectControllerTest {
     private MockMvc mockMvc;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final Project project1 = new Project();
+    private Project project1 = new Project();
     private final Project project2 = new Project();
     private String project1Json;
     private MvcResult mvcResult;
@@ -89,6 +90,119 @@ class ProjectControllerTest {
                 .andReturn();
         assertInstanceOf(DuplicateKeyException.class, mvcResult.getResolvedException());
     }
+
+    @Test
+    void addProjectFail_ALLFields_Blank() throws Exception {
+        project1 = new Project();
+        project1Json = objectMapper.writeValueAsString(project1);
+        when(projectService.add(any(Project.class))).thenReturn(new Project());
+        mvcResult = mockMvc.perform(post("/projects")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(project1Json))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+        assertInstanceOf(MethodArgumentNotValidException.class, mvcResult.getResolvedException());
+        verify(projectService, times(0)).add(project1);
+    }
+
+    @Test
+    void addProjectFail_Annee_Blank() throws Exception {
+        project1.setAnnee("");
+        project1Json = objectMapper.writeValueAsString(project1);
+        when(projectService.add(any(Project.class))).thenReturn(new Project());
+        mvcResult = mockMvc.perform(post("/projects")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(project1Json))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+        assertInstanceOf(MethodArgumentNotValidException.class, mvcResult.getResolvedException());
+        verify(projectService, times(0)).add(project1);
+    }
+
+    @Test
+    void addProjectFail_Annee_UnderFour() throws Exception {
+        project1.setAnnee("");
+        project1Json = objectMapper.writeValueAsString(project1);
+        when(projectService.add(any(Project.class))).thenReturn(new Project());
+        mvcResult = mockMvc.perform(post("/projects")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(project1Json))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+        assertInstanceOf(MethodArgumentNotValidException.class, mvcResult.getResolvedException());
+        verify(projectService, times(0)).add(project1);
+    }
+
+    @Test
+    void addProjectFail_Annee_OverFour() throws Exception {
+        project1.setAnnee("");
+        project1Json = objectMapper.writeValueAsString(project1);
+        when(projectService.add(any(Project.class))).thenReturn(new Project());
+        mvcResult = mockMvc.perform(post("/projects")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(project1Json))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+        assertInstanceOf(MethodArgumentNotValidException.class, mvcResult.getResolvedException());
+        verify(projectService, times(0)).add(project1);
+    }
+
+    @Test
+    void addProjectFail_Annee_NonNumbers() throws Exception {
+        project1.setAnnee("Annee");
+        project1Json = objectMapper.writeValueAsString(project1);
+        when(projectService.add(any(Project.class))).thenReturn(new Project());
+        mvcResult = mockMvc.perform(post("/projects")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(project1Json))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+        assertInstanceOf(MethodArgumentNotValidException.class, mvcResult.getResolvedException());
+        verify(projectService, times(0)).add(project1);
+    }
+
+    @Test
+    void addProjectFail_Libelle_Blank() throws Exception {
+        project1.setLibelle("");
+        project1Json = objectMapper.writeValueAsString(project1);
+        when(projectService.add(any(Project.class))).thenReturn(new Project());
+        mvcResult = mockMvc.perform(post("/projects")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(project1Json))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+        assertInstanceOf(MethodArgumentNotValidException.class, mvcResult.getResolvedException());
+        verify(projectService, times(0)).add(project1);
+    }
+
+    @Test
+    void addProjectFail_Promotion_Blank() throws Exception {
+        project1.setPromotion("");
+        project1Json = objectMapper.writeValueAsString(project1);
+        when(projectService.add(any(Project.class))).thenReturn(new Project());
+        mvcResult = mockMvc.perform(post("/projects")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(project1Json))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+        assertInstanceOf(MethodArgumentNotValidException.class, mvcResult.getResolvedException());
+        verify(projectService, times(0)).add(project1);
+    }
+
+    @Test
+    void addProjectFail_Description_Blank() throws Exception {
+        project1.setDescription("");
+        project1Json = objectMapper.writeValueAsString(project1);
+        when(projectService.add(any(Project.class))).thenReturn(new Project());
+        mvcResult = mockMvc.perform(post("/projects")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(project1Json))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+        assertInstanceOf(MethodArgumentNotValidException.class, mvcResult.getResolvedException());
+        verify(projectService, times(0)).add(project1);
+    }
+
 
     @Test
     void getAllProjects_WithData() throws Exception {
