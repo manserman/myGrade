@@ -1,6 +1,7 @@
 package priv.mansour.school.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -98,8 +99,13 @@ class ProjectControllerTest {
         when(projectService.add(any(Project.class))).thenReturn(new Project());
         mvcResult = mockMvc.perform(post("/projects")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(project1Json))
+                        .content(project1Json)
+                        .characterEncoding(StandardCharsets.UTF_8))
                 .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.annee").value("L'annee est obligatoire."))
+                .andExpect(jsonPath("$.promotion").value("Veuillez fournir une promotion pour le projet."))
+                .andExpect(jsonPath("$.description").value("Veuillez fournir une description pour le projet."))
+                .andExpect(jsonPath("$.libelle").value("Veuillez fournir un libelle pour le projet."))
                 .andReturn();
         assertInstanceOf(MethodArgumentNotValidException.class, mvcResult.getResolvedException());
         verify(projectService, times(0)).add(project1);
@@ -112,22 +118,27 @@ class ProjectControllerTest {
         when(projectService.add(any(Project.class))).thenReturn(new Project());
         mvcResult = mockMvc.perform(post("/projects")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding(StandardCharsets.UTF_8)
                         .content(project1Json))
                 .andExpect(status().isBadRequest())
-                .andReturn();
+                .andExpect(jsonPath("$.annee").value(Matchers.anyOf(
+                        Matchers.is("L'annee est obligatoire."),
+                        Matchers.is("L'annee doit etre au format YYYY (ex: 2024).")
+                ))).andReturn();
         assertInstanceOf(MethodArgumentNotValidException.class, mvcResult.getResolvedException());
         verify(projectService, times(0)).add(project1);
     }
 
     @Test
     void addProjectFail_Annee_UnderFour() throws Exception {
-        project1.setAnnee("");
+        project1.setAnnee("200");
         project1Json = objectMapper.writeValueAsString(project1);
         when(projectService.add(any(Project.class))).thenReturn(new Project());
         mvcResult = mockMvc.perform(post("/projects")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(project1Json))
                 .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.annee").value("L'annee doit etre au format YYYY (ex: 2024)."))
                 .andReturn();
         assertInstanceOf(MethodArgumentNotValidException.class, mvcResult.getResolvedException());
         verify(projectService, times(0)).add(project1);
@@ -135,13 +146,14 @@ class ProjectControllerTest {
 
     @Test
     void addProjectFail_Annee_OverFour() throws Exception {
-        project1.setAnnee("");
+        project1.setAnnee("20024");
         project1Json = objectMapper.writeValueAsString(project1);
         when(projectService.add(any(Project.class))).thenReturn(new Project());
         mvcResult = mockMvc.perform(post("/projects")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(project1Json))
                 .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.annee").value("L'annee doit etre au format YYYY (ex: 2024)."))
                 .andReturn();
         assertInstanceOf(MethodArgumentNotValidException.class, mvcResult.getResolvedException());
         verify(projectService, times(0)).add(project1);
@@ -156,6 +168,7 @@ class ProjectControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(project1Json))
                 .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.annee").value("L'annee doit etre au format YYYY (ex: 2024)."))
                 .andReturn();
         assertInstanceOf(MethodArgumentNotValidException.class, mvcResult.getResolvedException());
         verify(projectService, times(0)).add(project1);

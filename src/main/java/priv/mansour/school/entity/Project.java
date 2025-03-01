@@ -24,7 +24,8 @@ public class Project {
     @Id
     private String id;
 
-    @Pattern(regexp = "\\d{4}", message = "L'année doit être au format YYYY (ex: 2024).")
+    @NotBlank(message = "L'annee est obligatoire.")
+    @Pattern(regexp = "\\d{4}", message = "L'annee doit etre au format YYYY (ex: 2024).")
     private String annee;
 
     @NotBlank(message = "Veuillez fournir une promotion pour le projet.")
@@ -33,7 +34,7 @@ public class Project {
     @NotBlank(message = "Veuillez fournir une description pour le projet.")
     private String description;
 
-    @NotBlank(message = "Veuillez fournir un libellé pour le projet.")
+    @NotBlank(message = "Veuillez fournir un libelle pour le projet.")
     private String libelle;
 
     @DBRef
