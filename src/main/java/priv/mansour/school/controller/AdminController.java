@@ -21,6 +21,7 @@ import static priv.mansour.school.utils.Constants.ADMIN;
 public class AdminController {
 
 	private final IAdminService adminService;
+	public static final String ADMINID_LITERAL = "Admin ID: ";
 
 	@Autowired
 	public AdminController(IAdminService adminService) {
@@ -31,7 +32,7 @@ public class AdminController {
 	public ResponseEntity<Admin> addAdmin(@Valid @RequestBody Admin admin) {
 		GlobalLogger.infoCreate(ADMIN, "Creating new admin: " + admin.getId());
 		Admin createdAdmin = adminService.add(admin);
-		GlobalLogger.infoSuccess("Created", ADMIN, "Admin ID: " + createdAdmin.getId());
+		GlobalLogger.infoSuccess("Created", ADMIN, ADMINID_LITERAL + createdAdmin.getId());
 		return ResponseEntity.status(HttpStatus.CREATED).body(createdAdmin);
 	}
 
@@ -47,7 +48,7 @@ public class AdminController {
 	public ResponseEntity<Admin> getAdminById(@PathVariable @NotBlank String id) {
 		GlobalLogger.infoRead(ADMIN, "Fetching admin by ID: " + id);
 		Admin admin = adminService.getById(id);
-		GlobalLogger.infoSuccess("Fetched by ID", ADMIN, "Admin ID: " + admin.getId());
+		GlobalLogger.infoSuccess("Fetched by ID", ADMIN, ADMINID_LITERAL + admin.getId());
 		return ResponseEntity.ok(admin);
 	}
 
@@ -55,7 +56,7 @@ public class AdminController {
 	public ResponseEntity<Admin> updateAdmin(@PathVariable @NotBlank String id, @Valid @RequestBody Admin adminToUpdate) {
 		GlobalLogger.infoUpdate(ADMIN, id, adminToUpdate);
 		Admin updatedAdmin = adminService.update(id, adminToUpdate);
-		GlobalLogger.infoSuccess("Updated", ADMIN, "Admin ID: " + updatedAdmin.getId());
+		GlobalLogger.infoSuccess("Updated", ADMIN, ADMINID_LITERAL + updatedAdmin.getId());
 		return ResponseEntity.ok(updatedAdmin);
 	}
 
@@ -63,7 +64,7 @@ public class AdminController {
 	public ResponseEntity<Void> deleteAdminById(@PathVariable @NotBlank String id) {
 		GlobalLogger.infoDelete(ADMIN, "Deleting admin ID: " + id);
 		adminService.deleteById(id);
-		GlobalLogger.infoSuccess("Deleted", ADMIN, "Admin ID: " + id);
+		GlobalLogger.infoSuccess("Deleted", ADMIN, ADMINID_LITERAL + id);
 		return ResponseEntity.noContent().build();
 	}
 }

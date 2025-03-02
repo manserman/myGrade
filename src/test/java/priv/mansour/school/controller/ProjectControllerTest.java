@@ -5,6 +5,8 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -48,12 +50,13 @@ class ProjectControllerTest {
     private final Project project2 = new Project();
     private String project1Json;
     private MvcResult mvcResult;
+    private final String PROJECT_ID = "1";
 
     @BeforeEach
     void setUp() throws Exception {
 
         project1.setAnnee("2024");
-        project1.setId("1");
+        project1.setId(PROJECT_ID);
         project1.setLibelle("Project1");
         project1.setDescription("Premiere competence");
         project1.setPromotion("2024");
@@ -111,71 +114,27 @@ class ProjectControllerTest {
         verify(projectService, times(0)).add(project1);
     }
 
-    @Test
-    void addProjectFail_Annee_Blank() throws Exception {
-        project1.setAnnee("");
+    @ParameterizedTest
+    @ValueSource(strings = {"", "200", "20024", "Annee"})
+    void test_Add_Annee_Not_VALID(String annee) throws Exception {
+        project1.setAnnee(annee);
         project1Json = objectMapper.writeValueAsString(project1);
         when(projectService.add(any(Project.class))).thenReturn(new Project());
         mvcResult = mockMvc.perform(post("/projects")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .characterEncoding(StandardCharsets.UTF_8)
                         .content(project1Json))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.annee").value(Matchers.anyOf(
-                        Matchers.is("L'annee est obligatoire."),
+                .andExpect(jsonPath("$.annee").value(
                         Matchers.is("L'annee doit etre au format YYYY (ex: 2024).")
-                ))).andReturn();
-        assertInstanceOf(MethodArgumentNotValidException.class, mvcResult.getResolvedException());
-        verify(projectService, times(0)).add(project1);
-    }
-
-    @Test
-    void addProjectFail_Annee_UnderFour() throws Exception {
-        project1.setAnnee("200");
-        project1Json = objectMapper.writeValueAsString(project1);
-        when(projectService.add(any(Project.class))).thenReturn(new Project());
-        mvcResult = mockMvc.perform(post("/projects")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(project1Json))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.annee").value("L'annee doit etre au format YYYY (ex: 2024)."))
+                ))
                 .andReturn();
         assertInstanceOf(MethodArgumentNotValidException.class, mvcResult.getResolvedException());
         verify(projectService, times(0)).add(project1);
     }
 
-    @Test
-    void addProjectFail_Annee_OverFour() throws Exception {
-        project1.setAnnee("20024");
-        project1Json = objectMapper.writeValueAsString(project1);
-        when(projectService.add(any(Project.class))).thenReturn(new Project());
-        mvcResult = mockMvc.perform(post("/projects")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(project1Json))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.annee").value("L'annee doit etre au format YYYY (ex: 2024)."))
-                .andReturn();
-        assertInstanceOf(MethodArgumentNotValidException.class, mvcResult.getResolvedException());
-        verify(projectService, times(0)).add(project1);
-    }
 
     @Test
-    void addProjectFail_Annee_NonNumbers() throws Exception {
-        project1.setAnnee("Annee");
-        project1Json = objectMapper.writeValueAsString(project1);
-        when(projectService.add(any(Project.class))).thenReturn(new Project());
-        mvcResult = mockMvc.perform(post("/projects")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(project1Json))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.annee").value("L'annee doit etre au format YYYY (ex: 2024)."))
-                .andReturn();
-        assertInstanceOf(MethodArgumentNotValidException.class, mvcResult.getResolvedException());
-        verify(projectService, times(0)).add(project1);
-    }
-
-    @Test
-    void addProjectFail_Libelle_Blank() throws Exception {
+    void testAddProjectFail_Libelle_Blank() throws Exception {
         project1.setLibelle("");
         project1Json = objectMapper.writeValueAsString(project1);
         when(projectService.add(any(Project.class))).thenReturn(new Project());
@@ -189,7 +148,7 @@ class ProjectControllerTest {
     }
 
     @Test
-    void addProjectFail_Promotion_Blank() throws Exception {
+    void testAddProjectFail_Promotion_Blank() throws Exception {
         project1.setPromotion("");
         project1Json = objectMapper.writeValueAsString(project1);
         when(projectService.add(any(Project.class))).thenReturn(new Project());
@@ -203,7 +162,7 @@ class ProjectControllerTest {
     }
 
     @Test
-    void addProjectFail_Description_Blank() throws Exception {
+    void testAddProjectFail_Description_Blank() throws Exception {
         project1.setDescription("");
         project1Json = objectMapper.writeValueAsString(project1);
         when(projectService.add(any(Project.class))).thenReturn(new Project());
@@ -218,7 +177,7 @@ class ProjectControllerTest {
 
 
     @Test
-    void getAllProjects_WithData() throws Exception {
+    void testGetAllProjects_WithData() throws Exception {
         String listProjects = objectMapper.writeValueAsString(Arrays.asList(project1, project2));
         when(projectService.getAll()).thenReturn(Arrays.asList(project1, project2));
         mvcResult = mockMvc.perform(get("/projects"))
@@ -228,7 +187,7 @@ class ProjectControllerTest {
     }
 
     @Test
-    void getAllProjects_WithoutData() throws Exception {
+    void testGetAllProjects_WithoutData() throws Exception {
         when(projectService.getAll()).thenReturn(new ArrayList<>());
         mvcResult = mockMvc.perform(get("/projects"))
                 .andExpect(status().isOk())
@@ -238,8 +197,8 @@ class ProjectControllerTest {
     }
 
     @Test
-    void getProjectById_Success() throws Exception {
-        when(projectService.getById(eq("1"))).thenReturn(project1);
+    void testGetProjectById_Success() throws Exception {
+        when(projectService.getById(PROJECT_ID)).thenReturn(project1);
         mvcResult = mockMvc.perform(get("/projects/1"))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -248,8 +207,8 @@ class ProjectControllerTest {
     }
 
     @Test
-    void getProjectById_NotFound() throws Exception {
-        when(projectService.getById(eq("1"))).thenThrow(new ResourceNotFoundException("Project not found"));
+    void testGetProjectById_NotFound() throws Exception {
+        when(projectService.getById(PROJECT_ID)).thenThrow(new ResourceNotFoundException("Project not found"));
         mvcResult = mockMvc.perform(get("/projects/1"))
                 .andExpect(status().isNotFound())
                 .andReturn();
@@ -259,8 +218,8 @@ class ProjectControllerTest {
     }
 
     @Test
-    void updateProject_Success() throws Exception {
-        when(projectService.update(eq("1"), any(Project.class))).thenReturn(project1);
+    void testUpdateProject_Success() throws Exception {
+        when(projectService.update(eq(PROJECT_ID), any(Project.class))).thenReturn(project1);
         mvcResult = mockMvc.perform(put("/projects/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(project1Json))
@@ -272,7 +231,7 @@ class ProjectControllerTest {
 
     @Test
     void updateProject_NotFound() throws Exception {
-        when(projectService.update(eq("1"), any(Project.class))).thenThrow(new ResourceNotFoundException("Project not found"));
+        when(projectService.update(eq(PROJECT_ID), any(Project.class))).thenThrow(new ResourceNotFoundException("Project not found"));
         mvcResult = mockMvc.perform(put("/projects/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(project1Json)
@@ -285,45 +244,45 @@ class ProjectControllerTest {
 
     @Test
     void deleteProjectById_Success() throws Exception {
-        doNothing().when(projectService).deleteById(eq("1"));
+        doNothing().when(projectService).deleteById(PROJECT_ID);
         mockMvc.perform(delete("/projects/1"))
                 .andExpect(status().isNoContent());
 
-        verify(projectService, times(1)).deleteById("1");
+        verify(projectService, times(1)).deleteById(PROJECT_ID);
     }
 
     @Test
     void deleteProjectById_NotFound() throws Exception {
-        doThrow(new ResourceNotFoundException("Project not found")).when(projectService).deleteById(eq("1"));
+        doThrow(new ResourceNotFoundException("Project not found")).when(projectService).deleteById(PROJECT_ID);
         mvcResult = mockMvc.perform(delete("/projects/1"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.error").value("Resource Not Found"))
                 .andExpect(jsonPath("$.message").value("Project not found"))
                 .andReturn();
         assertInstanceOf(ResourceNotFoundException.class, mvcResult.getResolvedException());
-        verify(projectService, times(1)).deleteById("1");
+        verify(projectService, times(1)).deleteById(PROJECT_ID);
     }
 
     @Test
     void addCompetenceToProject_Success() throws Exception {
-        Competence competence1 = new Competence("1", "Premiere competence", "comp1");
+        Competence competence1 = new Competence(PROJECT_ID, "Premiere competence", "comp1");
         project1.addCompetence(competence1);
         project1Json = objectMapper.writeValueAsString(project1);
-        when(projectService.addCompetenceToProject(eq("1"), any(Competence.class))).thenReturn(project1);
+        when(projectService.addCompetenceToProject(eq(PROJECT_ID), any(Competence.class))).thenReturn(project1);
         mockMvc.perform(post("/projects/1/competences")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(project1Json)
                         .characterEncoding(StandardCharsets.UTF_8))
                 .andExpect(status().isOk())
                 .andExpect(content().json(project1Json));
-        verify(projectService, times(1)).addCompetenceToProject(eq("1"), any(Competence.class));
+        verify(projectService, times(1)).addCompetenceToProject(eq(PROJECT_ID), any(Competence.class));
     }
 
     @Test
     void addCompetenceToProject_NotFound() throws Exception {
-        Competence competence1 = new Competence("1", "Premiere competence", "comp1");
+        Competence competence1 = new Competence(PROJECT_ID, "Premiere competence", "comp1");
         project1.addCompetence(competence1);
-        when(projectService.addCompetenceToProject(eq("1"), any(Competence.class))).thenThrow(new ResourceNotFoundException("Project not found"));
+        when(projectService.addCompetenceToProject(eq(PROJECT_ID), any(Competence.class))).thenThrow(new ResourceNotFoundException("Project not found"));
         mvcResult = mockMvc.perform(post("/projects/1/competences")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(project1Json)
@@ -335,4 +294,5 @@ class ProjectControllerTest {
 
         assertInstanceOf(ResourceNotFoundException.class, mvcResult.getResolvedException());
     }
+
 }

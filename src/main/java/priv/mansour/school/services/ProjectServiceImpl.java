@@ -20,71 +20,71 @@ import static priv.mansour.school.utils.Constants.PROJECT;
 @Validated
 public class ProjectServiceImpl implements IProjectService {
 
-	private final ProjectRepository projectRepository;
+    private final ProjectRepository projectRepository;
 
-	@Autowired
-	public ProjectServiceImpl(ProjectRepository projectRepository) {
-		this.projectRepository = projectRepository;
-	}
+    @Autowired
+    public ProjectServiceImpl(ProjectRepository projectRepository) {
+        this.projectRepository = projectRepository;
+    }
 
-	@Override
-	public Project add(@Valid Project project) {
-		try {
-			return projectRepository.save(project);
-		} catch (org.springframework.dao.DuplicateKeyException e) {
-			throw new DuplicateKeyException("Project already exists", PROJECT, project.getId());
-		}
-	}
+    @Override
+    public Project add(@Valid Project project) {
+        try {
+            return projectRepository.save(project);
+        } catch (org.springframework.dao.DuplicateKeyException e) {
+            throw new DuplicateKeyException("Project already exists", PROJECT, project.getId());
+        }
+    }
 
-	@Override
-	public List<Project> getAll() {
-		return projectRepository.findAll();
-	}
+    @Override
+    public List<Project> getAll() {
+        return projectRepository.findAll();
+    }
 
-	@Override
-	public Project getById(@NotBlank String id) {
-		return projectRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException(PROJECT, "READ", "Project not found for ID: " + id));
-	}
+    @Override
+    public Project getById(@NotBlank String id) {
+        return projectRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(PROJECT, "READ", "Project not found for ID: " + id));
+    }
 
-	@Override
-	public Project findByLibelle(@NotBlank String libelle) {
-		return projectRepository.findByLibelle(libelle)
-				.orElseThrow(() -> new ResourceNotFoundException(PROJECT, "READ", "Project not found for libelle: " + libelle));
-	}
+    @Override
+    public Project findByLibelle(@NotBlank String libelle) {
+        return projectRepository.findByLibelle(libelle)
+                .orElseThrow(() -> new ResourceNotFoundException(PROJECT, "READ", "Project not found for libelle: " + libelle));
+    }
 
-	@Override
-	public Project update(@NotBlank String id, @Valid Project updatedProject) {
-		Project project = getById(id);
-		project.setCompetences(updatedProject.getCompetences());
-		return projectRepository.save(project);
-	}
+    @Override
+    public Project update(@NotBlank String id, @Valid Project updatedProject) {
+        Project project = getById(id);
+        project.setCompetences(updatedProject.getCompetences());
+        return projectRepository.save(project);
+    }
 
-	@Override
-	public void deleteById(@NotBlank String id) {
-		if (!projectRepository.existsById(id)) {
-			throw new ResourceNotFoundException(PROJECT, "DELETE", "Project not found for ID: " + id);
-		}
-		projectRepository.deleteById(id);
-	}
+    @Override
+    public void deleteById(@NotBlank String id) {
+        if (!projectRepository.existsById(id)) {
+            throw new ResourceNotFoundException(PROJECT, "DELETE", "Project not found for ID: " + id);
+        }
+        projectRepository.deleteById(id);
+    }
 
-	public Project addCompetenceToProject(@NotBlank String projectId, @Valid Competence competence) {
-		Project project = getById(projectId);
+    public Project addCompetenceToProject(@NotBlank String projectId, @Valid Competence competence) {
+        Project project = getById(projectId);
 
-		boolean competenceExists = project.getCompetences().stream()
-				.anyMatch(existingCompetence -> existingCompetence.getLibelle().equals(competence.getLibelle()));
+        boolean competenceExists = project.getCompetences().stream()
+                .anyMatch(existingCompetence -> existingCompetence.getLibelle().equals(competence.getLibelle()));
 
-		if (competenceExists) {
-			throw new DuplicateKeyException("Competence already exists in this project.", "Project", projectId);
-		}
+        if (competenceExists) {
+            throw new DuplicateKeyException("Competence already exists in this project.", "Project", projectId);
+        }
 
-		project.addCompetence(competence);
-		return projectRepository.save(project);
-	}
+        project.addCompetence(competence);
+        return projectRepository.save(project);
+    }
 
-	public List<Competence> getAllCompetences(@NotBlank String projectId) {
-		Project project = getById(projectId);
-		return project.getCompetences() == null ? new ArrayList<>() : project.getCompetences();
-	}
+    public List<Competence> getAllCompetences(@NotBlank String projectId) {
+        Project project = getById(projectId);
+        return project.getCompetences() == null ? new ArrayList<>() : project.getCompetences();
+    }
 }
 

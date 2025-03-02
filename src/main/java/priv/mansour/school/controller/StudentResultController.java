@@ -42,15 +42,15 @@ public class StudentResultController {
 
 	@PutMapping("/{studentId}/update")
 	public ResponseEntity<Student> updateStudentResult(@PathVariable @NotBlank String studentId,
-			@RequestBody @Valid Competence competence, @RequestParam ResultatEnum resultat) {
+													   @RequestBody @Valid Competence competence, @RequestParam ResultatEnum result) {
 
-		GlobalLogger.infoUpdate("StudentResult", studentId, "Received request to update result [" + resultat
+		GlobalLogger.infoUpdate("StudentResult", studentId, "Received request to update result [" + result
 				+ "] for competence [" + competence.getLibelle() + "] in student [" + studentId + "]");
 
-		Student updatedStudent = studentResultService.updateStudentResult(studentId, competence, resultat);
+		Student updatedStudent = studentResultService.updateStudentResult(studentId, competence, result);
 
 		GlobalLogger.infoSuccess(
-				"Successfully updated result [" + resultat + "] for competence [" + competence.getLibelle() + "]",
+				"Successfully updated result [" + result + "] for competence [" + competence.getLibelle() + "]",
 				"Student", studentId);
 
 		return ResponseEntity.ok(updatedStudent);
