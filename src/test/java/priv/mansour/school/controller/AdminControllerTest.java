@@ -59,6 +59,7 @@ class AdminControllerTest {
                 .andExpect(jsonPath("$.prenom").value("Doe"))
                 .andReturn();
         assertEquals(objectMapper.writeValueAsString(admin), result.getResponse().getContentAsString());
+        verify(adminService, times(1)).add(admin);
     }
 
     @Test
