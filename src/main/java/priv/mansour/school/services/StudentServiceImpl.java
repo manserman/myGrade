@@ -43,7 +43,7 @@ public class StudentServiceImpl implements IStudentService {
 	public Student getById( String id) {
 		GlobalLogger.infoRead("Fetching student by ID: {}", id);
 		return studentRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Étudiant non trouvé avec l'ID : " + id));
+				.orElseThrow(() -> new ResourceNotFoundException("Etudiant non trouvé avec l'ID : " + id));
 	}
 
 	public Student update(@NotBlank String id, @Valid Student updatedStudent) {
@@ -63,7 +63,7 @@ public class StudentServiceImpl implements IStudentService {
 		GlobalLogger.infoDelete("Deleting student with ID: {}", id);
 		if (!studentRepository.existsById(id)) {
 			GlobalLogger.warnNotFound(STUDENT, id);
-			throw new ResourceNotFoundException("Étudiant non trouvé avec l'ID : " + id);
+			throw new ResourceNotFoundException("Etudiant non trouvé avec l'ID : " + id);
 		}
 
 		studentRepository.deleteById(id);
@@ -74,6 +74,6 @@ public class StudentServiceImpl implements IStudentService {
 	public Student findByEmail(String mail) {
 		GlobalLogger.infoRead("Fetching student by ID: {}", mail);
 		return studentRepository.findByMail(mail)
-				.orElseThrow(() -> new ResourceNotFoundException("Étudiant non trouvé avec le mail : " + mail));
+				.orElseThrow(() -> new ResourceNotFoundException("Etudiant non trouvé avec le mail : " + mail));
 	}
 }
