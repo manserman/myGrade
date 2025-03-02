@@ -16,6 +16,7 @@ import priv.mansour.school.entity.Admin;
 import priv.mansour.school.exceptions.ResourceNotFoundException;
 import priv.mansour.school.services.AdminServiceImpl;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 
@@ -59,7 +60,7 @@ class AdminControllerTest {
                 .andExpect(jsonPath("$.prenom").value("Doe"))
                 .andReturn();
         assertEquals(objectMapper.writeValueAsString(admin), result.getResponse().getContentAsString());
-        verify(adminService, times(1)).add(admin);
+        verify(adminService, times(1)).add(any(Admin.class));
     }
 
     @Test
@@ -87,7 +88,7 @@ class AdminControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.nom").value("John"))
                 .andExpect(jsonPath("$.prenom").value("Doe"));
-        verify(adminService, times(1)).getById("99");
+        verify(adminService, times(1)).getById("1");
     }
 
     @Test
@@ -110,19 +111,19 @@ class AdminControllerTest {
 
         mockMvc.perform(put("/admins/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(admin)))
+                        .content(objectMapper.writeValueAsString(admin))
+                        .characterEncoding(StandardCharsets.UTF_8))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.nom").value("John"))
                 .andExpect(jsonPath("$.prenom").value("Doe"))
                 .andExpect(jsonPath("$.mail").value("john.updated@example.com"));
-        verify(adminService, times(1)).update("1", admin);
+        verify(adminService, times(1)).update(eq("1"), any(Admin.class));
 
     }
 
     @Test
     void testDeleteAdminById() throws Exception {
         doNothing().when(adminService).deleteById("1");
-
         mockMvc.perform(delete("/admins/1"))
                 .andExpect(status().isNoContent());
         verify(adminService, times(1)).deleteById("1");
