@@ -1,10 +1,9 @@
 package priv.mansour.school.services;
 
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import jakarta.validation.constraints.NotBlank;
 import priv.mansour.school.entity.Competence;
 import priv.mansour.school.entity.Student;
 import priv.mansour.school.enums.ResultatEnum;
@@ -24,8 +23,8 @@ public class StudentResultService {
 	}
 
 	@Transactional
-	public Student addResultToStudent(@NotBlank String studentId, Competence competence, ResultatEnum resultat) {
-		GlobalLogger.infoCreate("StudentResult", "Adding result [" + resultat + "] for competence ["
+	public Student addResultToStudent(@NotBlank String studentId, Competence competence, ResultatEnum result) {
+		GlobalLogger.infoCreate("StudentResult", "Adding result [" + result + "] for competence ["
 				+ competence.getLibelle() + "] to student [" + studentId + "]");
 
 		Student student = studentRepository.findById(studentId).orElseThrow(() -> {
@@ -33,7 +32,7 @@ public class StudentResultService {
 			return new ResourceNotFoundException("Student", "addResult", "Student not found with ID: " + studentId);
 		});
 
-		boolean added = student.addResult(competence, resultat);
+		boolean added = student.addResult(competence, result);
 		if (!added) {
 			GlobalLogger.warnDuplicate("StudentResult", studentId);
 			throw new DuplicateKeyException("Competence [" + competence.getLibelle() + "] already exists for student ["
@@ -41,7 +40,7 @@ public class StudentResultService {
 		}
 
 		Student updatedStudent = studentRepository.save(student);
-		GlobalLogger.infoSuccess("Added result [" + resultat + "] for competence [" + competence.getLibelle() + "]",
+		GlobalLogger.infoSuccess("Added result [" + result + "] for competence [" + competence.getLibelle() + "]",
 				"Student", studentId);
 		return updatedStudent;
 	}
